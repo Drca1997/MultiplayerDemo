@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 6083471132698808948}
   - component: {fileID: 459080203251427388}
   - component: {fileID: 346540731833701034}
-  - component: {fileID: 6111846413445367680}
+  - component: {fileID: 3814328784862368800}
   m_Layer: 0
   m_Name: Head
   m_TagString: Untagged
@@ -165,7 +165,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &6111846413445367680
+--- !u!135 &3814328784862368800
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -176,8 +176,8 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 0.49999997
+  m_Center: {x: 0, y: 0.00000011920929, z: 0}
 --- !u!1 &2584612175543339849
 GameObject:
   m_ObjectHideFlags: 0
@@ -189,7 +189,7 @@ GameObject:
   - component: {fileID: 5438380734294100393}
   - component: {fileID: 2088427655378364022}
   - component: {fileID: 4180529640886259623}
-  - component: {fileID: 6525880278053291771}
+  - component: {fileID: 4610078958109100035}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -260,7 +260,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &6525880278053291771
+--- !u!135 &4610078958109100035
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -416,7 +416,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 2
   rotateSpeed: 10
-  cubePref: {fileID: 8656816435703866988, guid: 9f44bc4c8333bac4d8e57ac6de13f245, type: 3}
+  possibleSpawnPositions:
+  - {x: -1, y: 0, z: 0}
+  - {x: 1, y: 0, z: 0}
+  - {x: -1, y: 0, z: -2}
+  - {x: 1, y: 0, z: -2}
 --- !u!114 &-594893284948362380
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -8,6 +8,8 @@ public class PlayerController : NetworkBehaviour
 {
     [SerializeField] private float moveSpeed;
     [SerializeField] private float rotateSpeed;
+    [SerializeField] private List<Vector3> possibleSpawnPositions;
+
     private Vector3 movementVector;
     private bool isWalking;
 
@@ -20,6 +22,7 @@ public class PlayerController : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         if (!IsOwner) { return; }
+        transform.position = possibleSpawnPositions[(int)OwnerClientId];
         OnPlayerSpawn?.Invoke(this, new OnPlayerSpawnArgs { playerTransform = transform});
     }
 
@@ -48,7 +51,7 @@ public class PlayerController : NetworkBehaviour
             if (!canMove)
             {
                 Vector3 moveXOnly = new Vector3(movementVector.x, 0, 0);
-                canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * 2f, 0.5f, moveXOnly, moveSpeed * Time.fixedDeltaTime);
+                canMove = (movementVector.x < -0.5f || movementVector.x > 0.5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * 2f, 0.5f, moveXOnly, moveSpeed * Time.fixedDeltaTime);
                 if(canMove)
                 {
                     movementVector = moveXOnly;
@@ -56,7 +59,7 @@ public class PlayerController : NetworkBehaviour
                 else
                 {
                     Vector3 moveZOnly = new Vector3(0, 0, movementVector.z);
-                    canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * 2f, 0.5f, moveZOnly, moveSpeed * Time.fixedDeltaTime);
+                    canMove = (movementVector.z < -0.5f || movementVector.z > 0.5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * 2f, 0.5f, moveZOnly, moveSpeed * Time.fixedDeltaTime);
                     if (canMove)
                     {
                         movementVector = moveZOnly;
