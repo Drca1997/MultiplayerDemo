@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,16 @@ public class TreasureChestSpawner : NetworkBehaviour
 {
     [SerializeField] Transform treasurePrefab;
     [SerializeField] List<Vector3> possibleSpawnPositions;
+    private List<TreasureChest> spawnedTreasureChests; 
     List<bool> occupiedSpawnPoints;
     public static TreasureChestSpawner Instance { get; private set; }
+
+    public static event EventHandler<OnGameEndArgs> OnGameEnd;
+    
+    public class OnGameEndArgs: EventArgs
+    {
+        public int finalScore;
+    }
 
     private void Awake()
     {
@@ -32,7 +41,7 @@ public class TreasureChestSpawner : NetworkBehaviour
             bool valid = false;
             while (!valid)
             {
-                int n = Random.Range(0, possibleSpawnPositions.Count);
+                int n = UnityEngine.Random.Range(0, possibleSpawnPositions.Count);
                 if (!occupiedSpawnPoints[n])
                 {
                     Transform spawnedChest = Instantiate(treasurePrefab, possibleSpawnPositions[n], Quaternion.identity, null);
@@ -43,4 +52,23 @@ public class TreasureChestSpawner : NetworkBehaviour
             }
         }
     }
+    /*
+    public void CheckEndGame()
+    {
+        if (!AreThereChestsToOpen())
+        {
+            OnGameEnd?.Invoke(this, 
+        }
+    }
+    private bool AreThereChestsToOpen()
+    {
+        foreach (TreasureChest chest in spawnedTreasureChests)
+        {
+            if (!chest.Opened)
+            {
+                return true;
+            }
+        }
+        return false;
+    }*/
 }

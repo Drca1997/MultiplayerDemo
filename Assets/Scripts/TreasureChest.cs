@@ -10,6 +10,8 @@ public class TreasureChest : NetworkBehaviour, IInteractable
     private bool opened = false;
     private int treasureValue = 1;
 
+    public bool Opened { get => opened; }
+
     // Start is called before the first frame update
     public override void OnNetworkSpawn()
     {
@@ -33,6 +35,12 @@ public class TreasureChest : NetworkBehaviour, IInteractable
 
     [ServerRpc(RequireOwnership=false)]
     private void OpenTreasureChestServerRpc()
+    {
+        OpenTreasureChestClientRpc();
+    }
+
+    [ClientRpc]
+    private void OpenTreasureChestClientRpc()
     {
         animator.SetBool(OPENED, true);
         opened = true;

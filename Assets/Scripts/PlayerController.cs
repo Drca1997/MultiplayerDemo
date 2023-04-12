@@ -142,6 +142,7 @@ public class PlayerController : NetworkBehaviour
 
     private void GameInput_OnInteractAction(object sender, EventArgs e)
     {
+        if (!IsOwner) { return; }
         if (selectedInteractable != null)
         {
             selectedInteractable.Interact(this);
