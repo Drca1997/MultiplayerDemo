@@ -10,14 +10,24 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float rotateSpeed;
     [SerializeField] private List<Vector3> possibleSpawnPositions;
 
+
+    private Vector3 lastInteractDirection;
+    private IInteractable selectedInteractable;
     private Vector3 movementVector;
     private bool isWalking;
+
+    public event EventHandler<OnSelectedInteractableChangedEventArgs> OnSelectedInteractableChanged;
+    public class OnSelectedInteractableChangedEventArgs : EventArgs
+    {
+        public IInteractable selectedInteractable;
+    }
 
     public static event EventHandler<OnPlayerSpawnArgs> OnPlayerSpawn;
     public class OnPlayerSpawnArgs: EventArgs
     {
         public Transform playerTransform;
     }
+
 
     public override void OnNetworkSpawn()
     {
@@ -29,58 +39,106 @@ public class PlayerController : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        GameInput.Instance.OnInteractAction += GameInput_OnInteractAction;
     }
 
     void Update()
     {
         if (!IsOwner) { return; }
 
-        float x = Input.GetAxisRaw("Horizontal");
-        float y = Input.GetAxisRaw("Vertical");
-        x = Mathf.Clamp(x, -1.0f, 1.0f);
-        y = Mathf.Clamp(y, -1.0f, 1.0f);
-        movementVector = new Vector3(x, 0, y).normalized;
+        HandleMovement();
+        HandleInteractions();
+        
     }
 
     private void FixedUpdate()
     {
-        if (movementVector.magnitude >= 0.1f) //Se houve input do jogador
+        if (!IsOwner) { return; }
+        float playerHeight = 2f;
+        float playerRadius = 0.5f;
+        bool canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, movementVector, moveSpeed * Time.fixedDeltaTime);
+        if (!canMove)
         {
-            bool canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * 2f, 0.5f, movementVector, moveSpeed * Time.fixedDeltaTime);
-            if (!canMove)
+            Vector3 moveXOnly = new Vector3(movementVector.x, 0, 0);
+            canMove = (movementVector.x < -0.5f || movementVector.x > 0.5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveXOnly, moveSpeed * Time.fixedDeltaTime);
+            if(canMove)
             {
-                Vector3 moveXOnly = new Vector3(movementVector.x, 0, 0);
-                canMove = (movementVector.x < -0.5f || movementVector.x > 0.5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * 2f, 0.5f, moveXOnly, moveSpeed * Time.fixedDeltaTime);
-                if(canMove)
+                movementVector = moveXOnly;
+            }
+            else
+            {
+                Vector3 moveZOnly = new Vector3(0, 0, movementVector.z);
+                canMove = (movementVector.z < -0.5f || movementVector.z > 0.5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveZOnly, moveSpeed * Time.fixedDeltaTime);
+                if (canMove)
                 {
-                    movementVector = moveXOnly;
+                    movementVector = moveZOnly;
+                }
+            }
+        }
+        if (canMove)
+        {
+            transform.position += moveSpeed * Time.fixedDeltaTime * movementVector;
+        }
+        transform.forward = Vector3.Slerp(transform.forward, movementVector, Time.fixedDeltaTime * rotateSpeed);
+        isWalking = movementVector.magnitude >= 0.1f;
+    }
+
+    private void HandleMovement()
+    {
+        Vector2 inputVector = GameInput.Instance.GetMovementVectorNormalized();
+        movementVector = new Vector3(inputVector.x, 0, inputVector.y);
+    }
+
+    private void HandleInteractions()
+    {
+        Vector2 inputVector = GameInput.Instance.GetMovementVectorNormalized();
+
+        Vector3 moveDir = new Vector3(inputVector.x, 0f, inputVector.y);
+
+        if (moveDir != Vector3.zero)
+        {
+            lastInteractDirection = moveDir;
+        }
+
+        float interactDistance = 2f;
+        Debug.DrawLine(transform.position, lastInteractDirection);
+        if (Physics.Raycast(transform.position, lastInteractDirection, out RaycastHit raycastHit, interactDistance))
+        {
+            if (raycastHit.transform.TryGetComponent(out IInteractable interactable))
+            {
+                if (interactable != selectedInteractable)
+                {
+                    SetSelectedInteractable(interactable);
                 }
                 else
                 {
-                    Vector3 moveZOnly = new Vector3(0, 0, movementVector.z);
-                    canMove = (movementVector.z < -0.5f || movementVector.z > 0.5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * 2f, 0.5f, moveZOnly, moveSpeed * Time.fixedDeltaTime);
-                    if (canMove)
-                    {
-                        movementVector = moveZOnly;
-                    }
+                    SetSelectedInteractable(null);
                 }
             }
-
-            if (canMove)
+            else
             {
-                transform.position += moveSpeed * Time.fixedDeltaTime * movementVector;
-                transform.forward = Vector3.Slerp(transform.forward, movementVector, Time.fixedDeltaTime * rotateSpeed);
-                isWalking = true;
+                SetSelectedInteractable(null);
             }
-            
-        }
-        else
-        {
-            isWalking = false;   
         }
     }
 
+    private void GameInput_OnInteractAction(object sender, EventArgs e)
+    {
+        if (selectedInteractable != null)
+        {
+            selectedInteractable.Interact();
+        }
+    }
+
+    private void SetSelectedInteractable(IInteractable selectedInteractable)
+    {
+        this.selectedInteractable = selectedInteractable;
+
+        OnSelectedInteractableChanged?.Invoke(this, new OnSelectedInteractableChangedEventArgs
+        {
+            selectedInteractable = selectedInteractable
+        });
+    }
     public bool IsWalking()
     {
         return isWalking;
