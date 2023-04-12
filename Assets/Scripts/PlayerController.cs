@@ -9,17 +9,33 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float moveSpeed;
     [SerializeField] private float rotateSpeed;
     [SerializeField] private List<Vector3> possibleSpawnPositions;
-
+    private int score = 0;
 
     private Vector3 lastInteractDirection;
     private IInteractable selectedInteractable;
     private Vector3 movementVector;
     private bool isWalking;
 
-    public event EventHandler<OnSelectedInteractableChangedEventArgs> OnSelectedInteractableChanged;
+    public int Score 
+    { 
+        get => score; 
+        set 
+        { 
+            score = value; 
+            OnUpdateScore?.Invoke(this, new OnUpdateScoreArgs { score = value }); 
+        } 
+    }
+
+    public static event EventHandler<OnSelectedInteractableChangedEventArgs> OnSelectedInteractableChanged;
     public class OnSelectedInteractableChangedEventArgs : EventArgs
     {
         public IInteractable selectedInteractable;
+    }
+
+    public static event EventHandler<OnUpdateScoreArgs> OnUpdateScore;
+    public class OnUpdateScoreArgs: EventArgs
+    {
+        public int score;
     }
 
     public static event EventHandler<OnPlayerSpawnArgs> OnPlayerSpawn;
@@ -27,6 +43,8 @@ public class PlayerController : NetworkBehaviour
     {
         public Transform playerTransform;
     }
+
+  
 
 
     public override void OnNetworkSpawn()
@@ -100,8 +118,8 @@ public class PlayerController : NetworkBehaviour
             lastInteractDirection = moveDir;
         }
 
-        float interactDistance = 2f;
-        Debug.DrawLine(transform.position, lastInteractDirection);
+        float interactDistance = 1.2f;
+        Debug.DrawLine(transform.position, transform.position + lastInteractDirection * interactDistance);
         if (Physics.Raycast(transform.position, lastInteractDirection, out RaycastHit raycastHit, interactDistance))
         {
             if (raycastHit.transform.TryGetComponent(out IInteractable interactable))
@@ -110,15 +128,15 @@ public class PlayerController : NetworkBehaviour
                 {
                     SetSelectedInteractable(interactable);
                 }
-                else
-                {
-                    SetSelectedInteractable(null);
-                }
             }
             else
             {
                 SetSelectedInteractable(null);
             }
+        }
+        else
+        {
+            SetSelectedInteractable(null);
         }
     }
 
@@ -126,7 +144,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (selectedInteractable != null)
         {
-            selectedInteractable.Interact();
+            selectedInteractable.Interact(this);
         }
     }
 
