@@ -12,24 +12,25 @@ public class TreasureChestSpawner : NetworkBehaviour
     [SerializeField] List<Vector3> possibleSpawnPositions;
     private List<TreasureChest> spawnedTreasureChests; 
     List<bool> occupiedSpawnPoints;
-    public static TreasureChestSpawner Instance { get; private set; }
-
-    public static event EventHandler<OnGameEndArgs> OnGameEnd;
+    [SerializeField] private int treasuresToSpawn;
     
-    public class OnGameEndArgs: EventArgs
-    {
-        public int finalScore;
-    }
+    public static TreasureChestSpawner Instance { get; private set; }
+    public List<TreasureChest> SpawnedTreasureChests { get => spawnedTreasureChests;  }
 
     private void Awake()
     {
         Instance = this;
     }
 
+    private void Start()
+    {
+        spawnedTreasureChests = new List<TreasureChest>();
+    }
+
     public override void OnNetworkSpawn()
     {
         if (!IsHost) { return; }
-        SpawnTreasureChests(possibleSpawnPositions.Count);
+        SpawnTreasureChests(treasuresToSpawn);
     }
 
     public void SpawnTreasureChests(int numChests)
@@ -48,27 +49,13 @@ public class TreasureChestSpawner : NetworkBehaviour
                     spawnedChest.GetComponent<NetworkObject>().Spawn(true);
                     valid = true;
                     occupiedSpawnPoints[n] = true;
+                    spawnedTreasureChests.Add(spawnedChest.GetComponent<TreasureChest>());
                 }
             }
         }
     }
-    /*
-    public void CheckEndGame()
-    {
-        if (!AreThereChestsToOpen())
-        {
-            OnGameEnd?.Invoke(this, 
-        }
-    }
-    private bool AreThereChestsToOpen()
-    {
-        foreach (TreasureChest chest in spawnedTreasureChests)
-        {
-            if (!chest.Opened)
-            {
-                return true;
-            }
-        }
-        return false;
-    }*/
+    
+    
+
+    
 }

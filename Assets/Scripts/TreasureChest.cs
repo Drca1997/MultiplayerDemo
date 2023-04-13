@@ -28,8 +28,8 @@ public class TreasureChest : NetworkBehaviour, IInteractable
     {
         if (!opened)
         {
-            OpenTreasureChestServerRpc();
             player.Score += treasureValue;
+            OpenTreasureChestServerRpc();
         }
     }
 
@@ -44,5 +44,7 @@ public class TreasureChest : NetworkBehaviour, IInteractable
     {
         animator.SetBool(OPENED, true);
         opened = true;
+        GameManager.Instance.CheckEndGameServerRpc();    
     }
+
 }

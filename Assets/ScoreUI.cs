@@ -8,12 +8,13 @@ public class ScoreUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI text;
     [SerializeField] private TextMeshProUGUI finalScoreLabel;
+    [SerializeField] private TextMeshProUGUI resultLabel;
 
     // Start is called before the first frame update
     void Start()
     {
         PlayerController.OnUpdateScore += OnUpdateScore;
-        //TreasureChestSpawner.OnGameEnd += OnGameEnd;
+        GameManager.OnGameEnd += OnGameEnd;
     }
 
     // Update is called once per frame
@@ -27,13 +28,23 @@ public class ScoreUI : MonoBehaviour
         text.text = "SCORE: " + args.score.ToString(); 
     }
 
-    /*
+    
 
-    private void OnGameEnd(object sender, TreasureChestSpawner.OnGameEndArgs args)
+    private void OnGameEnd(object sender, GameManager.OnGameEndArgs args)
     {
+        text.gameObject.SetActive(false);
         finalScoreLabel.gameObject.SetActive(true);
         finalScoreLabel.text = "FINAL SCORE: " + args.finalScore;
-    }*/
+        resultLabel.gameObject.SetActive(true);
+        if (args.isVictory)
+        {
+            resultLabel.text = "VICTORY"; 
+        }
+        else
+        {
+            resultLabel.text = "DEFEAT";
+        }
+    }
 
 
 }

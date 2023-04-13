@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class PlayerController : NetworkBehaviour
 {
+    public static PlayerController LocalInstance { get; private set; }
     [SerializeField] private float moveSpeed;
     [SerializeField] private float rotateSpeed;
     [SerializeField] private List<Vector3> possibleSpawnPositions;
@@ -44,14 +45,13 @@ public class PlayerController : NetworkBehaviour
         public Transform playerTransform;
     }
 
-  
-
 
     public override void OnNetworkSpawn()
     {
         if (!IsOwner) { return; }
+        LocalInstance = this;
         transform.position = possibleSpawnPositions[(int)OwnerClientId];
-        OnPlayerSpawn?.Invoke(this, new OnPlayerSpawnArgs { playerTransform = transform});
+        OnPlayerSpawn?.Invoke(this, new OnPlayerSpawnArgs { playerTransform = transform });
     }
 
     // Start is called before the first frame update
