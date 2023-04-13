@@ -57,7 +57,7 @@ public class PlayerController : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GameInput.Instance.OnInteractAction += GameInput_OnInteractAction;
+        GameInput.OnInteractActionPerformed += GameInput_OnInteractAction;
     }
 
     void Update()

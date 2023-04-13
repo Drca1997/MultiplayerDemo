@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -8,11 +9,15 @@ public class PlayerAnimator : NetworkBehaviour
     [SerializeField]
     private PlayerController playerController;
     private Animator animator;
+    private OwnerNetworkAnimator ownerNetworkAnimator;
     private const string IS_WALKING = "IsWalking";
+    private const string INTERACT = "Interact";
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        GameInput.OnInteractActionStarted += OnInteract;
+        ownerNetworkAnimator = GetComponent<OwnerNetworkAnimator>();
     }
 
     // Start is called before the first frame update
@@ -28,4 +33,10 @@ public class PlayerAnimator : NetworkBehaviour
         animator.SetBool(IS_WALKING, playerController.IsWalking());
         
     }
+
+    private void OnInteract(object sender, EventArgs args)
+    {   if (!IsOwner) { return; }
+        ownerNetworkAnimator.SetTrigger(INTERACT);
+    }
+
 }
