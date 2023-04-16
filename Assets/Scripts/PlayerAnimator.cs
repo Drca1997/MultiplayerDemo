@@ -12,11 +12,13 @@ public class PlayerAnimator : NetworkBehaviour
     private OwnerNetworkAnimator ownerNetworkAnimator;
     private const string IS_WALKING = "IsWalking";
     private const string INTERACT = "Interact";
+    private const string THROW = "Throw";
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
         GameInput.OnInteractActionStarted += OnInteract;
+        GameInput.OnAttackActionPerformed += OnThrowSnowball;
         ownerNetworkAnimator = GetComponent<OwnerNetworkAnimator>();
     }
 
@@ -37,6 +39,12 @@ public class PlayerAnimator : NetworkBehaviour
     private void OnInteract(object sender, EventArgs args)
     {   if (!IsOwner) { return; }
         ownerNetworkAnimator.SetTrigger(INTERACT);
+    }
+
+    private void OnThrowSnowball(object sender, EventArgs args)
+    {
+        if (!IsOwner) { return; }
+        ownerNetworkAnimator.SetTrigger(THROW);
     }
 
 }

@@ -11,6 +11,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float rotateSpeed;
     [SerializeField] private List<Vector3> possibleSpawnPositions;
     [SerializeField] private SnowballSO snowballSO;
+    [SerializeField] private Transform snowballSpawnPoint;
     private SnowballUI snowballUIManager;
 
     private int score = 0;
@@ -178,24 +179,24 @@ public class PlayerController : NetworkBehaviour
         if (!IsOwner) { return; }
         if (currentCooldown <= 0)
         {
-            InstantiateProjectilServerRpc(OwnerClientId, transform.position.x, transform.position.y, transform.position.z);
+            InstantiateProjectilServerRpc(OwnerClientId, snowballSpawnPoint.position, transform.forward);
             currentCooldown = snowballSO.cooldown;
             snowballUIManager.ResetCooldown();
+            
         }
-        
-
     }
+
     public bool IsWalking()
     {
         return isWalking;
     }
 
     [ServerRpc]
-    private void InstantiateProjectilServerRpc(ulong throwerID, float x, float y, float z)
+    private void InstantiateProjectilServerRpc(ulong throwerID, Vector3 origin, Vector3 direction)
     {
-        Transform snowball = Instantiate(snowballSO.prefab, new Vector3(x, y, z) + Vector3.up, Quaternion.Euler(transform.rotation.x, transform.rotation.y, transform.rotation.z), null);
-        snowball.GetComponent<SnowballController>().Init(OwnerClientId, snowballSO.speed, transform.forward);
+        Transform snowball = Instantiate(snowballSO.prefab, origin, Quaternion.Euler(transform.rotation.x, transform.rotation.y, transform.rotation.z), null);
+        snowball.GetComponent<SnowballController>().Init(throwerID, snowballSO.speed, direction);
         snowball.GetComponent<NetworkObject>().Spawn();
-        //snowball.GetComponent<IThrowable>().Throw();
+        
     }
 }
