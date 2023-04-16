@@ -79,7 +79,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3194ca85e517a8140a8f4208fbc7cbd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TransitionStateInfoList: []
+  TransitionStateInfoList:
+  - Layer: 0
+    OriginatingState: 2081823275
+    DestinationState: -662453572
+    TransitionDuration: 0.25
+    TriggerNameHash: -662453572
+    TransitionIndex: 1
+  - Layer: 0
+    OriginatingState: 765711723
+    DestinationState: -662453572
+    TransitionDuration: 0.25
+    TriggerNameHash: -662453572
+    TransitionIndex: 1
   m_Animator: {fileID: 5721322288990341362}
 --- !u!1 &784238073379806440
 GameObject:
@@ -904,6 +916,7 @@ MonoBehaviour:
   - {x: 1, y: 0, z: 0}
   - {x: -1, y: 0, z: -2}
   - {x: 1, y: 0, z: -2}
+  snowballSO: {fileID: 11400000, guid: 3a0b5d4d44c618b4d9fd26eaffe21c6c, type: 2}
 --- !u!114 &-594893284948362380
 MonoBehaviour:
   m_ObjectHideFlags: 0

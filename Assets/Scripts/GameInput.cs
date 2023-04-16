@@ -12,6 +12,7 @@ public class GameInput : MonoBehaviour
 
     public static event EventHandler OnInteractActionStarted;
     public static event EventHandler OnInteractActionPerformed;
+    public static event EventHandler OnAttackActionPerformed;
 
     void Awake() 
     {
@@ -26,6 +27,8 @@ public class GameInput : MonoBehaviour
 
         playerInputActions.Player.Interact.performed += Interact_performed;
         playerInputActions.Player.Interact.started += Interact_started;
+
+        playerInputActions.Player.Attack.performed += Attack_performed;
     }
 
     // Start is called before the first frame update
@@ -48,6 +51,11 @@ public class GameInput : MonoBehaviour
     private void Interact_started(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
         OnInteractActionStarted?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void Attack_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        OnAttackActionPerformed?.Invoke(this, EventArgs.Empty);
     }
 
     public Vector2 GetMovementVectorNormalized()

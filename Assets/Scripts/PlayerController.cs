@@ -10,8 +10,11 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float moveSpeed;
     [SerializeField] private float rotateSpeed;
     [SerializeField] private List<Vector3> possibleSpawnPositions;
-    private int score = 0;
+    [SerializeField] private SnowballSO snowballSO;
+    private SnowballUI snowballUIManager;
 
+    private int score = 0;
+    private float currentCooldown = 0;
     private Vector3 lastInteractDirection;
     private IInteractable selectedInteractable;
     private Vector3 movementVector;
@@ -58,6 +61,10 @@ public class PlayerController : NetworkBehaviour
     void Start()
     {
         GameInput.OnInteractActionPerformed += GameInput_OnInteractAction;
+        GameInput.OnAttackActionPerformed += GameInput_OnAttackAction;
+        
+        currentCooldown = snowballSO.cooldown;
+        snowballUIManager = FindObjectOfType<SnowballUI>();
     }
 
     void Update()
@@ -66,7 +73,8 @@ public class PlayerController : NetworkBehaviour
 
         HandleMovement();
         HandleInteractions();
-        
+
+        UpdateAttackCooldown();
     }
 
     private void FixedUpdate()
@@ -158,8 +166,36 @@ public class PlayerController : NetworkBehaviour
             selectedInteractable = selectedInteractable
         });
     }
+
+    private void UpdateAttackCooldown()
+    {
+        currentCooldown = Mathf.Clamp(currentCooldown - Time.deltaTime, 0, float.MaxValue);
+        snowballUIManager.SetFillAmount(snowballSO.cooldown, currentCooldown);
+    }
+
+    private void GameInput_OnAttackAction(object sender, EventArgs e)
+    {
+        if (!IsOwner) { return; }
+        if (currentCooldown <= 0)
+        {
+            InstantiateProjectilServerRpc(OwnerClientId, transform.position.x, transform.position.y, transform.position.z);
+            currentCooldown = snowballSO.cooldown;
+            snowballUIManager.ResetCooldown();
+        }
+        
+
+    }
     public bool IsWalking()
     {
         return isWalking;
+    }
+
+    [ServerRpc]
+    private void InstantiateProjectilServerRpc(ulong throwerID, float x, float y, float z)
+    {
+        Transform snowball = Instantiate(snowballSO.prefab, new Vector3(x, y, z) + Vector3.up, Quaternion.Euler(transform.rotation.x, transform.rotation.y, transform.rotation.z), null);
+        snowball.GetComponent<SnowballController>().Init(OwnerClientId, snowballSO.speed, transform.forward);
+        snowball.GetComponent<NetworkObject>().Spawn();
+        //snowball.GetComponent<IThrowable>().Throw();
     }
 }
