@@ -39,6 +39,12 @@ public class SnowballController : NetworkBehaviour
         if (Physics.SphereCast(transform.position, radius, transform.forward, out RaycastHit hit, moveSpeed))
         {
             Debug.Log("Hit " + hit.collider.name);
+            if (hit.collider.GetComponent<IDamageable>() != null)
+            {
+                ulong hitPlayerID = hit.collider.GetComponent<PlayerController>().OwnerClientId;
+                hit.collider.GetComponent<IDamageable>().ProcessHit(hitPlayerID);
+                //StunPlayerServerRpc(hitPlayerID);
+            }
             Destroy(gameObject);
         }
         else
@@ -56,6 +62,13 @@ public class SnowballController : NetworkBehaviour
         transform.position = new Vector3(x, y, z);
     }
 
+    /*
+
+    [ClientRpc]
+    private void StunPlayerServerRpc(ulong hitPlayer)
+    {
+        NetworkManager.Singleton.ConnectedClients[hitPlayer].PlayerObject.GetComponent<IDamageable>().ProcessHit();
+    }*/
     /*
     public void OnDrawGizmosSelected()
     {
