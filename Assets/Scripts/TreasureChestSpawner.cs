@@ -9,7 +9,7 @@ using UnityEngine.Assertions;
 public class TreasureChestSpawner : NetworkBehaviour
 {
     [SerializeField] Transform treasurePrefab;
-    [SerializeField] List<Vector3> possibleSpawnPositions;
+    [SerializeField] List<Transform> possibleSpawnPositions;
     private List<TreasureChest> spawnedTreasureChests; 
     List<bool> occupiedSpawnPoints;
     [SerializeField] private int treasuresToSpawn;
@@ -45,7 +45,7 @@ public class TreasureChestSpawner : NetworkBehaviour
                 int n = UnityEngine.Random.Range(0, possibleSpawnPositions.Count);
                 if (!occupiedSpawnPoints[n])
                 {
-                    Transform spawnedChest = Instantiate(treasurePrefab, possibleSpawnPositions[n], Quaternion.identity, null);
+                    Transform spawnedChest = Instantiate(treasurePrefab, possibleSpawnPositions[n].position, Quaternion.identity, null);
                     spawnedChest.GetComponent<NetworkObject>().Spawn(true);
                     valid = true;
                     occupiedSpawnPoints[n] = true;
