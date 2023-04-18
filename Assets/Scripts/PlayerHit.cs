@@ -9,7 +9,9 @@ public class PlayerHit : NetworkBehaviour, IDamageable
     [SerializeField] float recoveryTime;
 
     private float currentRecoveryTime;
-    bool isStunned = false;
+    private bool isStunned = false;
+
+    public bool IsStunned { get => isStunned; set => isStunned = value; }
 
     public static event EventHandler OnHit;
     public static event EventHandler OnStunnedRecovery;
@@ -34,27 +36,14 @@ public class PlayerHit : NetworkBehaviour, IDamageable
         }
     }
 
-    public void ProcessHit(ulong hitPlayerID)
+    public void ProcessHit()
     {
-        /*
-        ClientRpcParams rpcParams = new ClientRpcParams();
-        ClientRpcSendParams rpcSendParams = new ClientRpcSendParams { TargetClientIds = new List<ulong> {hitPlayerID } };
-        StunPlayerClientRpc(rpcParams);
-        */
         GameInput.Instance.PlayerInputActions.Disable();
         isStunned = true;
         currentRecoveryTime = recoveryTime;
         OnHit?.Invoke(this, EventArgs.Empty);
     }
 
-    [ClientRpc]
-    private void StunPlayerClientRpc(ClientRpcParams args)
-    {
-        GameInput.Instance.PlayerInputActions.Disable();
-        isStunned = true;
-        currentRecoveryTime = recoveryTime;
-        OnHit?.Invoke(this, EventArgs.Empty);
-    }
 
     private void OnRecovery()
     {

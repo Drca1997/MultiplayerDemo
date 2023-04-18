@@ -24,7 +24,6 @@ public class SnowballController : NetworkBehaviour
     void Start()
     {
         radius = GetComponent<SphereCollider>().radius * transform.lossyScale.x;
-        Debug.Log(radius);
     }
 
     private void Update()
@@ -38,12 +37,13 @@ public class SnowballController : NetworkBehaviour
         //check collisions
         if (Physics.SphereCast(transform.position, radius, transform.forward, out RaycastHit hit, moveSpeed))
         {
-            Debug.Log("Hit " + hit.collider.name);
             if (hit.collider.GetComponent<IDamageable>() != null)
             {
                 ulong hitPlayerID = hit.collider.GetComponent<PlayerController>().OwnerClientId;
-                hit.collider.GetComponent<IDamageable>().ProcessHit(hitPlayerID);
-                //StunPlayerServerRpc(hitPlayerID);
+                ClientRpcParams clientParams = new ClientRpcParams();
+                ClientRpcSendParams sendParams = new ClientRpcSendParams { TargetClientIds = new List<ulong> { hitPlayerID } };
+                clientParams.Send = sendParams;
+                StunPlayerClientRpc(hit.collider.GetComponent<NetworkObject>(), clientParams);
             }
             Destroy(gameObject);
         }
@@ -62,13 +62,16 @@ public class SnowballController : NetworkBehaviour
         transform.position = new Vector3(x, y, z);
     }
 
-    /*
 
     [ClientRpc]
-    private void StunPlayerServerRpc(ulong hitPlayer)
+    private void StunPlayerClientRpc(NetworkObjectReference hitPlayerReference, ClientRpcParams clientParams)
     {
-        NetworkManager.Singleton.ConnectedClients[hitPlayer].PlayerObject.GetComponent<IDamageable>().ProcessHit();
-    }*/
+        hitPlayerReference.TryGet(out NetworkObject hitPlayerObject);
+        if (!hitPlayerObject.GetComponent<IDamageable>().IsStunned)
+        {
+            hitPlayerObject.GetComponent<IDamageable>().ProcessHit();
+        }
+    }
     /*
     public void OnDrawGizmosSelected()
     {

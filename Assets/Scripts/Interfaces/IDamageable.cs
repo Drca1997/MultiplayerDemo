@@ -4,5 +4,6 @@ using UnityEngine;
 
 public interface IDamageable
 {
-    public void ProcessHit(ulong hitPlayerID);
+    public bool IsStunned { get; set; }
+    public void ProcessHit();
 }

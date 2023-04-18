@@ -52,11 +52,13 @@ public class PlayerAnimator : NetworkBehaviour
 
     private void OnStunned(object sender, EventArgs args)
     {
+        if (!IsOwner) {return; }
         animator.SetBool(STUNNED, true);
     }
 
     private void OnRecovery(object sender, EventArgs args)
     {
+        if (!IsOwner) { return; }
         animator.SetBool(STUNNED, false);
     }
 
