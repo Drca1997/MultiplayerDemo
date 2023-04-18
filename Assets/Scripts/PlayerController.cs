@@ -17,8 +17,8 @@ public class PlayerController : NetworkBehaviour
     private int score = 0;
     private float currentCooldown = 0;
     private Vector3 lastInteractDirection;
-    private IInteractable selectedInteractable;
     private Vector3 movementVector;
+    private IInteractable selectedInteractable;
     private bool isWalking;
 
     public int Score 
@@ -81,21 +81,22 @@ public class PlayerController : NetworkBehaviour
     private void FixedUpdate()
     {
         if (!IsOwner) { return; }
-        float playerHeight = 2f;
-        float playerRadius = 0.5f;
-        bool canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, movementVector, moveSpeed * Time.fixedDeltaTime);
+        float playerRadius = 0.6f;
+        bool canMove = !Physics.BoxCast(transform.position, Vector3.one * playerRadius, movementVector, Quaternion.identity, moveSpeed * Time.fixedDeltaTime);
         if (!canMove)
         {
             Vector3 moveXOnly = new Vector3(movementVector.x, 0, 0);
-            canMove = (movementVector.x < -0.5f || movementVector.x > 0.5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveXOnly, moveSpeed * Time.fixedDeltaTime);
-            if(canMove)
+            //canMove = (movementVector.x < -0.5f || movementVector.x > 0.5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveXOnly, moveSpeed * Time.fixedDeltaTime);
+            canMove = (movementVector.x < -0.5f || movementVector.x > 0.5f) && !Physics.BoxCast(transform.position, Vector3.one * playerRadius, moveXOnly, Quaternion.identity, moveSpeed * Time.fixedDeltaTime);
+            if (canMove)
             {
                 movementVector = moveXOnly;
             }
             else
             {
                 Vector3 moveZOnly = new Vector3(0, 0, movementVector.z);
-                canMove = (movementVector.z < -0.5f || movementVector.z > 0.5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveZOnly, moveSpeed * Time.fixedDeltaTime);
+                //canMove = (movementVector.z < -0.5f || movementVector.z > 0.5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveZOnly, moveSpeed * Time.fixedDeltaTime);
+                canMove = (movementVector.z < -0.5f || movementVector.z > 0.5f) && !Physics.BoxCast(transform.position, Vector3.one * playerRadius, moveZOnly, Quaternion.identity, moveSpeed * Time.fixedDeltaTime);
                 if (canMove)
                 {
                     movementVector = moveZOnly;
