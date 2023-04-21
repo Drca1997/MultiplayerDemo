@@ -66,6 +66,7 @@ public class MultiplayerManager : MonoBehaviour
         NetworkManager.Singleton.OnClientConnectedCallback += NetworkManager_OnClientConnectedCallback;
         NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_Server_OnClientDisconnectCallback;
         NetworkManager.Singleton.StartHost();
+        Loader.LoadNetwork(Loader.Scene.CharacterSelectionScene);
     }
 
     

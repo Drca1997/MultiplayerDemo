@@ -20,7 +20,7 @@ public class NetworkManagerUI : MonoBehaviour
         {
             if (connectionMethod == ConnectionMethod.NETCODE)
             {
-                NetworkManager.Singleton.StartHost();
+                MultiplayerManager.Instance.StartHost();
             }
             else if(connectionMethod == ConnectionMethod.RELAY)
             {
@@ -34,7 +34,7 @@ public class NetworkManagerUI : MonoBehaviour
         {
             if (connectionMethod == ConnectionMethod.NETCODE)
             {
-                NetworkManager.Singleton.StartClient();
+                MultiplayerManager.Instance.StartClient();
             }
             else if (connectionMethod == ConnectionMethod.RELAY)
             {

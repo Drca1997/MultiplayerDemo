@@ -20,6 +20,7 @@ public class TestRelay : MonoBehaviour
             Debug.Log("Signed In " + AuthenticationService.Instance.PlayerId);
         };
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        DontDestroyOnLoad(gameObject);
 
     }
 
@@ -38,7 +39,7 @@ public class TestRelay : MonoBehaviour
                 allocation.ConnectionData
             );
             Debug.Log(joinCode);
-            NetworkManager.Singleton.StartHost();
+            MultiplayerManager.Instance.StartHost();
         }
         catch (RelayServiceException e)
         {
@@ -61,7 +62,7 @@ public class TestRelay : MonoBehaviour
                 joinAllocation.ConnectionData,
                 joinAllocation.HostConnectionData
             );
-            NetworkManager.Singleton.StartClient();
+            MultiplayerManager.Instance.StartClient();
         }
         catch (RelayServiceException e)
         {
