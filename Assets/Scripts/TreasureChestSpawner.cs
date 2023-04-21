@@ -24,7 +24,7 @@ public class TreasureChestSpawner : NetworkBehaviour
 
     private void Start()
     {
-        spawnedTreasureChests = new List<TreasureChest>();
+        
     }
 
     public override void OnNetworkSpawn()
@@ -35,6 +35,7 @@ public class TreasureChestSpawner : NetworkBehaviour
 
     public void SpawnTreasureChests(int numChests)
     {
+        spawnedTreasureChests = new List<TreasureChest>();
         Assert.IsTrue(numChests <= possibleSpawnPositions.Count);
         occupiedSpawnPoints = Enumerable.Repeat(false, possibleSpawnPositions.Count).ToList();
         for (int i = 0; i < numChests; i++)

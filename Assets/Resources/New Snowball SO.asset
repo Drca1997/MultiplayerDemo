@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 9184887429299042345, guid: 9ba253791e7c7d84e9b36e664314276b, type: 3}
   speed: 8
-  cooldown: 0.1
+  cooldown: 3
