@@ -5,8 +5,10 @@ using System;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
 
-public class MultiplayerManager : MonoBehaviour
+public class MultiplayerManager : NetworkBehaviour
 {
+
+
     public const int MAX_PLAYER_AMOUNT = 4;
     //private const string PLAYER_PREFS_PLAYER_NAME_MULTIPLAYER = "PlayerNameMultiplayer";
 
@@ -21,7 +23,7 @@ public class MultiplayerManager : MonoBehaviour
     //[SerializeField] private List<Color> playerColorList;
 
 
-    //private NetworkList<PlayerData> playerDataNetworkList;
+    private NetworkList<PlayerData> playerDataNetworkList;
     private string playerName;
 
 
@@ -33,9 +35,9 @@ public class MultiplayerManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         //playerName = PlayerPrefs.GetString(PLAYER_PREFS_PLAYER_NAME_MULTIPLAYER, "PlayerName" + UnityEngine.Random.Range(100, 1000));
+        playerDataNetworkList = new NetworkList<PlayerData>();
+        playerDataNetworkList.OnListChanged += PlayerDataNetworkList_OnListChanged;
 
-        //playerDataNetworkList = new NetworkList<PlayerData>();
-        //playerDataNetworkList.OnListChanged += PlayerDataNetworkList_OnListChanged;
     }
 
     private void Start()
@@ -54,11 +56,11 @@ public class MultiplayerManager : MonoBehaviour
 
         PlayerPrefs.SetString(PLAYER_PREFS_PLAYER_NAME_MULTIPLAYER, playerName);
     }
-
+    */
     private void PlayerDataNetworkList_OnListChanged(NetworkListEvent<PlayerData> changeEvent)
     {
         OnPlayerDataNetworkListChanged?.Invoke(this, EventArgs.Empty);
-    }*/
+    }
 
     public void StartHost()
     {
@@ -86,14 +88,11 @@ public class MultiplayerManager : MonoBehaviour
 
     private void NetworkManager_OnClientConnectedCallback(ulong clientId)
     {
-        /*
-        playerDataNetworkList.Add(new PlayerData
-        {
-            clientId = clientId,
-            colorId = GetFirstUnusedColorId(),
-        });
-        SetPlayerNameServerRpc(GetPlayerName());
-        SetPlayerIdServerRpc(AuthenticationService.Instance.PlayerId);*/
+        PlayerData newPlayerInfo = new PlayerData { clientID = clientId };
+        playerDataNetworkList.Add(newPlayerInfo);
+       
+        //SetPlayerNameServerRpc(GetPlayerName());
+        //SetPlayerIdServerRpc(AuthenticationService.Instance.PlayerId);
     }
 
     private void NetworkManager_ConnectionApprovalCallback(NetworkManager.ConnectionApprovalRequest connectionApprovalRequest, NetworkManager.ConnectionApprovalResponse connectionApprovalResponse)
@@ -161,12 +160,13 @@ public class MultiplayerManager : MonoBehaviour
         OnFailedToJoinGame?.Invoke(this, EventArgs.Empty);
     }
 
-    /*
+    
     public bool IsPlayerIndexConnected(int playerIndex)
     {
         return playerIndex < playerDataNetworkList.Count;
     }
 
+    /*
     public int GetPlayerDataIndexFromClientId(ulong clientId)
     {
         for (int i = 0; i < playerDataNetworkList.Count; i++)
@@ -195,12 +195,13 @@ public class MultiplayerManager : MonoBehaviour
     {
         return GetPlayerDataFromClientId(NetworkManager.Singleton.LocalClientId);
     }
+    */
 
     public PlayerData GetPlayerDataFromPlayerIndex(int playerIndex)
     {
         return playerDataNetworkList[playerIndex];
     }
-
+    /*
     public Color GetPlayerColor(int colorId)
     {
         return playerColorList[colorId];
