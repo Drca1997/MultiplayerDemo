@@ -62,12 +62,12 @@ public class GameInput : MonoBehaviour
     public Vector2 GetMovementVectorNormalized()
     {
         Vector2 inputVector = playerInputActions.Player.Move.ReadValue<Vector2>();
-
+        
         inputVector = inputVector.normalized;
 
         return inputVector;
-        /*
-        float x = Input.GetAxisRaw("Horizontal");
+        
+        /*float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
         x = Mathf.Clamp(x, -1.0f, 1.0f);
         y = Mathf.Clamp(y, -1.0f, 1.0f);

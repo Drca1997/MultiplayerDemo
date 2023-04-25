@@ -12,6 +12,11 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private List<Vector3> possibleSpawnPositions;
     [SerializeField] private SnowballSO snowballSO;
     [SerializeField] private Transform snowballSpawnPoint;
+    [SerializeField] private Transform cameraTransform;
+    [SerializeField] private float rotationSmoothTime = 0.5f;
+    private float targetRotation;
+    private float rotationVelocity;
+
     private SnowballUI snowballUIManager;
 
     private int score = 0;
@@ -56,6 +61,7 @@ public class PlayerController : NetworkBehaviour
         LocalInstance = this;
         transform.position = possibleSpawnPositions[(int)OwnerClientId];
         OnPlayerSpawn?.Invoke(this, new OnPlayerSpawnArgs { playerTransform = transform });
+        cameraTransform.gameObject.SetActive(true);
     }
 
     // Start is called before the first frame update
@@ -82,7 +88,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (!IsOwner) { return; }
         float playerRadius = 0.6f;
-        bool canMove = !Physics.BoxCast(transform.position, Vector3.one * playerRadius, movementVector, Quaternion.identity, moveSpeed * Time.fixedDeltaTime);
+        bool canMove = !Physics.BoxCast(transform.position, Vector3.one * playerRadius, movementVector * transform.rotation.y, Quaternion.identity, moveSpeed * Time.fixedDeltaTime);
         if (!canMove)
         {
             Vector3 moveXOnly = new Vector3(movementVector.x, 0, 0);
@@ -114,7 +120,24 @@ public class PlayerController : NetworkBehaviour
     private void HandleMovement()
     {
         Vector2 inputVector = GameInput.Instance.GetMovementVectorNormalized();
-        movementVector = new Vector3(inputVector.x, 0, inputVector.y);
+        if (inputVector != Vector2.zero)
+        {
+            targetRotation = Mathf.Atan2(inputVector.x, inputVector.y) * Mathf.Rad2Deg +
+                              cameraTransform.eulerAngles.y;
+            float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref rotationVelocity,
+                rotationSmoothTime);
+
+            // rotate to face input direction relative to camera position
+            transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+            Vector3 targetDirection = Quaternion.Euler(0.0f, targetRotation, 0.0f) * Vector3.forward;
+
+            // move the player
+            movementVector = targetDirection.normalized;
+        }
+        else
+        {
+            movementVector = Vector2.zero;  
+        }
     }
 
     private void HandleInteractions()
