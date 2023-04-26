@@ -13,7 +13,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private SnowballSO snowballSO;
     [SerializeField] private Transform snowballSpawnPoint;
     [SerializeField] private Transform cameraTransform;
-    [SerializeField] private float rotationSmoothTime = 0.5f;
+    [SerializeField] private float rotationSmoothTime = 10f;
     private float targetRotation;
     private float rotationVelocity;
 
@@ -132,7 +132,7 @@ public class PlayerController : NetworkBehaviour
             Vector3 targetDirection = Quaternion.Euler(0.0f, targetRotation, 0.0f) * Vector3.forward;
 
             // move the player
-            movementVector = targetDirection.normalized;
+            movementVector = targetDirection;
         }
         else
         {
@@ -142,13 +142,13 @@ public class PlayerController : NetworkBehaviour
 
     private void HandleInteractions()
     {
-        Vector2 inputVector = GameInput.Instance.GetMovementVectorNormalized();
+        //Vector2 inputVector = GameInput.Instance.GetMovementVectorNormalized();
 
-        Vector3 moveDir = new Vector3(inputVector.x, 0f, inputVector.y);
+        //Vector3 moveDir = new Vector3(inputVector.x, 0f, inputVector.y);
 
-        if (moveDir != Vector3.zero)
+        if (movementVector != Vector3.zero)
         {
-            lastInteractDirection = moveDir;
+            lastInteractDirection = movementVector;
         }
 
         float interactDistance = 1.2f;
