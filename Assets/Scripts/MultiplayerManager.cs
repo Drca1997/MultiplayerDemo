@@ -20,9 +20,9 @@ public class MultiplayerManager : NetworkBehaviour
     public event EventHandler OnPlayerDataNetworkListChanged;
 
 
-    //[SerializeField] private List<Color> playerColorList;
+    [SerializeField] private List<Color> playerColorList;
 
-
+    
     private NetworkList<PlayerData> playerDataNetworkList;
     private string playerName;
 
@@ -201,12 +201,12 @@ public class MultiplayerManager : NetworkBehaviour
     {
         return playerDataNetworkList[playerIndex];
     }
-    /*
+    
     public Color GetPlayerColor(int colorId)
     {
         return playerColorList[colorId];
     }
-
+    /*
     public void ChangePlayerColor(int colorId)
     {
         ChangePlayerColorServerRpc(colorId);

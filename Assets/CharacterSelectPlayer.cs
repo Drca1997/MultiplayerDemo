@@ -7,6 +7,8 @@ public class CharacterSelectPlayer : MonoBehaviour
 {
     [SerializeField] private int playerIndex;
     [SerializeField] private GameObject readyGameObject;
+    [SerializeField] private PlayerVisual playerVisual;
+    
 
     private void Start()
     {
@@ -37,6 +39,8 @@ public class CharacterSelectPlayer : MonoBehaviour
             Show();
             PlayerData playerData = MultiplayerManager.Instance.GetPlayerDataFromPlayerIndex(playerIndex);
             readyGameObject.SetActive(CharacterSelection.Instance.IsPlayerReady(playerData.clientID));
+
+            playerVisual.SetPlayerColor(MultiplayerManager.Instance.GetPlayerColor(playerIndex));
         }
         else
         {
