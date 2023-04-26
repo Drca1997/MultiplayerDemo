@@ -12,19 +12,22 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private List<Vector3> possibleSpawnPositions;
     [SerializeField] private SnowballSO snowballSO;
     [SerializeField] private Transform snowballSpawnPoint;
-    [SerializeField] private Transform cameraTransform;
-    [SerializeField] private float rotationSmoothTime = 10f;
-    private float targetRotation;
-    private float rotationVelocity;
+    [SerializeField]
+    private Transform cameraTransform;
+    [SerializeField] private float mouseSensivity = 5f;
+    
 
     private SnowballUI snowballUIManager;
 
+    private float yaw = 0;
+    private float pitch = 0;
     private int score = 0;
     private float currentCooldown = 0;
     private Vector3 lastInteractDirection;
     private Vector3 movementVector;
     private IInteractable selectedInteractable;
     private bool isWalking;
+    private const float _threshold = 0.01f;
 
     public int Score 
     { 
@@ -61,7 +64,6 @@ public class PlayerController : NetworkBehaviour
         LocalInstance = this;
         transform.position = possibleSpawnPositions[(int)OwnerClientId];
         OnPlayerSpawn?.Invoke(this, new OnPlayerSpawnArgs { playerTransform = transform });
-        cameraTransform.gameObject.SetActive(true);
     }
 
     // Start is called before the first frame update
@@ -88,7 +90,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (!IsOwner) { return; }
         float playerRadius = 0.6f;
-        bool canMove = !Physics.BoxCast(transform.position, Vector3.one * playerRadius, movementVector * transform.rotation.y, Quaternion.identity, moveSpeed * Time.fixedDeltaTime);
+        bool canMove = !Physics.BoxCast(transform.position, Vector3.one * playerRadius, movementVector, Quaternion.identity, moveSpeed * Time.fixedDeltaTime);
         if (!canMove)
         {
             Vector3 moveXOnly = new Vector3(movementVector.x, 0, 0);
@@ -116,39 +118,20 @@ public class PlayerController : NetworkBehaviour
         transform.forward = Vector3.Slerp(transform.forward, movementVector, Time.fixedDeltaTime * rotateSpeed);
         isWalking = movementVector.magnitude >= 0.1f;
     }
-
     private void HandleMovement()
     {
         Vector2 inputVector = GameInput.Instance.GetMovementVectorNormalized();
-        if (inputVector != Vector2.zero)
-        {
-            targetRotation = Mathf.Atan2(inputVector.x, inputVector.y) * Mathf.Rad2Deg +
-                              cameraTransform.eulerAngles.y;
-            float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref rotationVelocity,
-                rotationSmoothTime);
-
-            // rotate to face input direction relative to camera position
-            transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
-            Vector3 targetDirection = Quaternion.Euler(0.0f, targetRotation, 0.0f) * Vector3.forward;
-
-            // move the player
-            movementVector = targetDirection.normalized;
-        }
-        else
-        {
-            movementVector = Vector2.zero;  
-        }
+        movementVector = new Vector3(inputVector.x, 0f, inputVector.y);
     }
 
     private void HandleInteractions()
     {
-        //Vector2 inputVector = GameInput.Instance.GetMovementVectorNormalized();
+        Vector2 inputVector = GameInput.Instance.GetMovementVectorNormalized();
+        Vector3 moveDir = new Vector3(inputVector.x, 0f, inputVector.y);
 
-        //Vector3 moveDir = new Vector3(inputVector.x, 0f, inputVector.y);
-
-        if (movementVector != Vector3.zero)
+        if (moveDir != Vector3.zero)
         {
-            lastInteractDirection = movementVector;
+            lastInteractDirection = moveDir;
         }
 
         float interactDistance = 1.2f;

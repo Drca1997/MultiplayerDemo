@@ -2,10 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameInput : MonoBehaviour
 {
-
+    public Vector2 look;
     public static GameInput Instance { get; private set; }
     public PlayerInputActions PlayerInputActions { get => playerInputActions; }
 
@@ -14,6 +15,7 @@ public class GameInput : MonoBehaviour
     public static event EventHandler OnInteractActionStarted;
     public static event EventHandler OnInteractActionPerformed;
     public static event EventHandler OnAttackActionPerformed;
+    public static event EventHandler OnLookActionPerformed;
 
     void Awake() 
     {
@@ -23,6 +25,7 @@ public class GameInput : MonoBehaviour
         }
         Instance = this;
 
+        look = Vector2.zero;
         playerInputActions = new PlayerInputActions();
         playerInputActions.Player.Enable();
 
@@ -30,6 +33,8 @@ public class GameInput : MonoBehaviour
         playerInputActions.Player.Interact.started += Interact_started;
 
         playerInputActions.Player.Attack.performed += Attack_performed;
+
+      
     }
 
     // Start is called before the first frame update
@@ -43,6 +48,13 @@ public class GameInput : MonoBehaviour
     {
         
     }
+
+    public void OnLook(InputValue value)
+    {
+        look = value.Get<Vector2>();
+    }
+
+   
 
     private void Interact_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
