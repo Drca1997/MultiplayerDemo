@@ -22,6 +22,7 @@ public class CharacterSelectUI : MonoBehaviour
         {
             CharacterSelection.Instance.SetPlayerReady();
             readyButton.GetComponentInChildren<TextMeshProUGUI>().text = "READY";
+            readyButton.gameObject.SetActive(false);
         });
     }
 

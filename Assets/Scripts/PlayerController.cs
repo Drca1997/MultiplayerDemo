@@ -132,7 +132,7 @@ public class PlayerController : NetworkBehaviour
             Vector3 targetDirection = Quaternion.Euler(0.0f, targetRotation, 0.0f) * Vector3.forward;
 
             // move the player
-            movementVector = targetDirection;
+            movementVector = targetDirection.normalized;
         }
         else
         {
