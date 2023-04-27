@@ -41,6 +41,7 @@ public class PlayerHit : NetworkBehaviour, IDamageable
         GameInput.Instance.PlayerInputActions.Disable();
         isStunned = true;
         currentRecoveryTime = recoveryTime;
+        PlayerController.LocalInstance.Score -= GameDesignConstants.ON_HIT_PENALTY;
         OnHit?.Invoke(this, EventArgs.Empty);
     }
 

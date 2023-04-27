@@ -17,8 +17,6 @@ public class PlayerController : NetworkBehaviour
 
     private SnowballUI snowballUIManager;
 
-    private float yaw = 0;
-    private float pitch = 0;
     private int score = 0;
     private float currentCooldown = 0;
     private Vector3 lastInteractDirection;
@@ -187,7 +185,7 @@ public class PlayerController : NetworkBehaviour
         if (!IsOwner) { return; }
         if (currentCooldown <= 0)
         {
-            InstantiateProjectilServerRpc(OwnerClientId, snowballSpawnPoint.position, transform.forward);
+            InstantiateProjectilServerRpc(GetComponent<NetworkObject>(), snowballSpawnPoint.position, transform.forward);
             currentCooldown = snowballSO.cooldown;
             snowballUIManager.ResetCooldown();
             
@@ -200,10 +198,11 @@ public class PlayerController : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void InstantiateProjectilServerRpc(ulong throwerID, Vector3 origin, Vector3 direction)
+    private void InstantiateProjectilServerRpc(NetworkObjectReference thrower, Vector3 origin, Vector3 direction)
     {
+        thrower.TryGet(out NetworkObject throwerObject);
         Transform snowball = Instantiate(snowballSO.prefab, origin, Quaternion.Euler(transform.rotation.x, transform.rotation.y, transform.rotation.z), null);
-        snowball.GetComponent<SnowballController>().Init(throwerID, snowballSO.speed, direction);
+        snowball.GetComponent<SnowballController>().Init(throwerObject, snowballSO.speed, direction);
         snowball.GetComponent<NetworkObject>().Spawn();
         
     }

@@ -8,14 +8,18 @@ public class TreasureChest : NetworkBehaviour, IInteractable
     private Animator animator;
     private const string OPENED = "Opened";
     private bool opened = false;
-    private int treasureValue = 1;
+    private int treasureValue;
 
     public bool Opened { get => opened; }
 
     // Start is called before the first frame update
     public override void OnNetworkSpawn()
     {
-        animator = GetComponentInChildren<Animator>();    
+        animator = GetComponentInChildren<Animator>();  
+        if (IsServer)
+        {
+            SetTreasureValue();
+        }
     }
 
     // Update is called once per frame
@@ -45,6 +49,19 @@ public class TreasureChest : NetworkBehaviour, IInteractable
         animator.SetBool(OPENED, true);
         opened = true;
         GameManager.Instance.CheckEndGameServerRpc();    
+    }
+
+
+    private void SetTreasureValue()
+    {
+        int value = Random.Range(GameDesignConstants.TREASURE_MIN_SCORE, GameDesignConstants.TREASURE_MAX_SCORE);
+        SetTreasureValueClientRpc(value);
+    }
+
+    [ClientRpc]
+    private void SetTreasureValueClientRpc(int value)
+    {
+        treasureValue = value;
     }
 
 }

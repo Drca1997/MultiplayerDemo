@@ -6,15 +6,15 @@ using UnityEngine;
 public class SnowballController : NetworkBehaviour
 {
     private float speed;
-    private ulong throwerID;
+    private NetworkObject thrower;
     private Vector3 direction;
     private bool init = false;
     private float radius;
 
-    public void Init(ulong throwerID, float speed, Vector3 direction)
+    public void Init(NetworkObject thrower, float speed, Vector3 direction)
     {
         this.speed = speed;
-        this.throwerID = throwerID;
+        this.thrower = thrower;
         this.direction = direction;
         init = true;
         transform.LookAt(transform.position + direction);
@@ -40,10 +40,14 @@ public class SnowballController : NetworkBehaviour
             if (hit.collider.GetComponent<IDamageable>() != null)
             {
                 ulong hitPlayerID = hit.collider.GetComponent<PlayerController>().OwnerClientId;
-                ClientRpcParams clientParams = new ClientRpcParams();
-                ClientRpcSendParams sendParams = new ClientRpcSendParams { TargetClientIds = new List<ulong> { hitPlayerID } };
-                clientParams.Send = sendParams;
-                StunPlayerClientRpc(hit.collider.GetComponent<NetworkObject>(), clientParams);
+                ClientRpcParams hitclientParams = new ClientRpcParams();
+                ClientRpcSendParams hitSendParams = new ClientRpcSendParams { TargetClientIds = new List<ulong> { hitPlayerID } };
+                hitclientParams.Send = hitSendParams;
+                StunPlayerClientRpc(hit.collider.GetComponent<NetworkObject>(), hitclientParams);
+                ClientRpcParams throwerClientParams = new ClientRpcParams();
+                ClientRpcSendParams throwerSendParams = new ClientRpcSendParams { TargetClientIds = new List<ulong> { thrower.OwnerClientId } };
+                throwerClientParams.Send = throwerSendParams;
+                UpdateThrowerScoreClientRpc(thrower, throwerClientParams);
             }
             Destroy(gameObject);
         }
@@ -55,6 +59,12 @@ public class SnowballController : NetworkBehaviour
         
     }
 
+    [ClientRpc]
+    private void UpdateThrowerScoreClientRpc(NetworkObjectReference throwerPlayerReference, ClientRpcParams clientParams)
+    {
+        throwerPlayerReference.TryGet(out NetworkObject throwerPlayerObject);
+        throwerPlayerObject.GetComponent<PlayerController>().Score += GameDesignConstants.ON_THROW_SCORE;
+    }
 
     [ClientRpc]
     private void SnowballTrajectoryUpdateClientRpc(float x, float y, float z)
