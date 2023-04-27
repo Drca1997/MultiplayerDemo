@@ -12,9 +12,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private List<Vector3> possibleSpawnPositions;
     [SerializeField] private SnowballSO snowballSO;
     [SerializeField] private Transform snowballSpawnPoint;
-    [SerializeField]
-    private Transform cameraTransform;
-    [SerializeField] private float mouseSensivity = 5f;
+    [SerializeField] private PlayerVisual playerVisual;
     
 
     private SnowballUI snowballUIManager;
@@ -62,7 +60,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (!IsOwner) { return; }
         LocalInstance = this;
-        transform.position = possibleSpawnPositions[(int)OwnerClientId];
+        transform.position = possibleSpawnPositions[MultiplayerManager.Instance.GetPlayerDataIndexFromClientId(OwnerClientId)];
         OnPlayerSpawn?.Invoke(this, new OnPlayerSpawnArgs { playerTransform = transform });
     }
 
@@ -74,6 +72,9 @@ public class PlayerController : NetworkBehaviour
         
         currentCooldown = snowballSO.cooldown;
         snowballUIManager = FindObjectOfType<SnowballUI>();
+
+        PlayerData playerData = MultiplayerManager.Instance.GetPlayerDataFromClientId(OwnerClientId);
+        playerVisual.SetPlayerColor(MultiplayerManager.Instance.GetPlayerColor(playerData.colorID));
     }
 
     void Update()

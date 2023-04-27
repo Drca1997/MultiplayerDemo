@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5721322288990341362}
   - component: {fileID: 7089916772379868526}
   - component: {fileID: 1331666457269381821}
+  - component: {fileID: 7174343713506066372}
   m_Layer: 0
   m_Name: PlayerVisual
   m_TagString: Untagged
@@ -107,6 +108,19 @@ MonoBehaviour:
     TriggerNameHash: -1907200461
     TransitionIndex: 2
   m_Animator: {fileID: 5721322288990341362}
+--- !u!114 &7174343713506066372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 566767377751792547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7811e063de7635459f96f8489b32f6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scarfMeshRenderer: {fileID: 7551565629472244517}
 --- !u!1 &784238073379806440
 GameObject:
   m_ObjectHideFlags: 0
@@ -737,8 +751,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5163671622632543071}
   m_LocalRotation: {x: 0.77745956, y: -0.10880132, z: -0.022569533, w: -0.61903924}
-  m_LocalPosition: {x: -0.07, y: 0.153, z: 0.373}
-  m_LocalScale: {x: 1.5, y: 2, z: 1.5}
+  m_LocalPosition: {x: -0.028, y: 0.208, z: 0.386}
+  m_LocalScale: {x: 3, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 1031813899865972159}
   m_RootOrder: 3
@@ -931,8 +945,7 @@ MonoBehaviour:
   - {x: 1, y: 0, z: -2}
   snowballSO: {fileID: 11400000, guid: 3a0b5d4d44c618b4d9fd26eaffe21c6c, type: 2}
   snowballSpawnPoint: {fileID: 4349275531548270871}
-  cameraTransform: {fileID: 0}
-  mouseSensivity: 5
+  playerVisual: {fileID: 7174343713506066372}
 --- !u!114 &445585136955391053
 MonoBehaviour:
   m_ObjectHideFlags: 0

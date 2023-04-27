@@ -74,21 +74,21 @@ public class MultiplayerManager : NetworkBehaviour
     
     private void NetworkManager_Server_OnClientDisconnectCallback(ulong clientId)
     {
-        /*
+        
         for (int i = 0; i < playerDataNetworkList.Count; i++)
         {
             PlayerData playerData = playerDataNetworkList[i];
-            if (playerData.clientId == clientId)
+            if (playerData.clientID == clientId)
             {
                 // Disconnected!
                 playerDataNetworkList.RemoveAt(i);
             }
-        }*/
+        }
     }
 
     private void NetworkManager_OnClientConnectedCallback(ulong clientId)
     {
-        PlayerData newPlayerInfo = new PlayerData { clientID = clientId };
+        PlayerData newPlayerInfo = new PlayerData { clientID = clientId, colorID = GetFirstUnusedColorId()};
         playerDataNetworkList.Add(newPlayerInfo);
        
         //SetPlayerNameServerRpc(GetPlayerName());
@@ -166,24 +166,24 @@ public class MultiplayerManager : NetworkBehaviour
         return playerIndex < playerDataNetworkList.Count;
     }
 
-    /*
+    
     public int GetPlayerDataIndexFromClientId(ulong clientId)
     {
         for (int i = 0; i < playerDataNetworkList.Count; i++)
         {
-            if (playerDataNetworkList[i].clientId == clientId)
+            if (playerDataNetworkList[i].clientID == clientId)
             {
                 return i;
             }
         }
         return -1;
     }
-
+    
     public PlayerData GetPlayerDataFromClientId(ulong clientId)
     {
         foreach (PlayerData playerData in playerDataNetworkList)
         {
-            if (playerData.clientId == clientId)
+            if (playerData.clientID == clientId)
             {
                 return playerData;
             }
@@ -195,7 +195,7 @@ public class MultiplayerManager : NetworkBehaviour
     {
         return GetPlayerDataFromClientId(NetworkManager.Singleton.LocalClientId);
     }
-    */
+    
 
     public PlayerData GetPlayerDataFromPlayerIndex(int playerIndex)
     {
@@ -206,7 +206,7 @@ public class MultiplayerManager : NetworkBehaviour
     {
         return playerColorList[colorId];
     }
-    /*
+    
     public void ChangePlayerColor(int colorId)
     {
         ChangePlayerColorServerRpc(colorId);
@@ -225,16 +225,17 @@ public class MultiplayerManager : NetworkBehaviour
 
         PlayerData playerData = playerDataNetworkList[playerDataIndex];
 
-        playerData.colorId = colorId;
+        playerData.colorID = colorId;
 
         playerDataNetworkList[playerDataIndex] = playerData;
     }
+    
 
     private bool IsColorAvailable(int colorId)
     {
         foreach (PlayerData playerData in playerDataNetworkList)
         {
-            if (playerData.colorId == colorId)
+            if (playerData.colorID == colorId)
             {
                 // Already in use
                 return false;
@@ -254,7 +255,7 @@ public class MultiplayerManager : NetworkBehaviour
         }
         return -1;
     }
-
+    /*
     public void KickPlayer(ulong clientId)
     {
         NetworkManager.Singleton.DisconnectClient(clientId);

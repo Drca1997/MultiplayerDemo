@@ -40,7 +40,7 @@ public class CharacterSelectPlayer : MonoBehaviour
             PlayerData playerData = MultiplayerManager.Instance.GetPlayerDataFromPlayerIndex(playerIndex);
             readyGameObject.SetActive(CharacterSelection.Instance.IsPlayerReady(playerData.clientID));
 
-            playerVisual.SetPlayerColor(MultiplayerManager.Instance.GetPlayerColor(playerIndex));
+            playerVisual.SetPlayerColor(MultiplayerManager.Instance.GetPlayerColor(playerData.colorID));
         }
         else
         {
@@ -50,5 +50,11 @@ public class CharacterSelectPlayer : MonoBehaviour
     private void OnPlayerDataChanged(object sender, System.EventArgs args)
     {
         UpdatePlayer();
+    }
+
+    private void OnDestroy()
+    {
+        
+        MultiplayerManager.Instance.OnPlayerDataNetworkListChanged -= OnPlayerDataChanged;
     }
 }

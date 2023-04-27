@@ -364,7 +364,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 43}
+  m_AnchoredPosition: {x: 0, y: 40}
   m_SizeDelta: {x: 155.98401, y: 53.092102}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &283040353
@@ -467,9 +467,9 @@ RectTransform:
   m_Father: {fileID: 1125764894}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -113, y: -244}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -110}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &283040356
@@ -1564,7 +1564,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6960e84d07fb87f47956e7a81d71c4e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ProtocolType: 1
+  m_ProtocolType: 0
   m_MaxPacketQueueSize: 128
   m_MaxPayloadSize: 6144
   m_HeartbeatTimeoutMS: 500
@@ -1734,7 +1734,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93dcfb10e6102c94191af24361312e6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  connectionMethod: 1
+  connectionMethod: 0
   hostBttn: {fileID: 256150302}
   joinBttn: {fileID: 2132363246}
   joinCodeInput: {fileID: 283040354}
@@ -2211,6 +2211,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -47.99997}
+  m_AnchoredPosition: {x: 0, y: -50}
   m_SizeDelta: {x: 155.98401, y: 53.092102}
   m_Pivot: {x: 0.5, y: 0.5}
