@@ -12,6 +12,7 @@ public class NetworkManagerUI : MonoBehaviour
     [SerializeField] private Button joinBttn;
     [SerializeField] private InputField joinCodeInput;
     [SerializeField] private TestRelay relayScript;
+    [SerializeField] private UsernameUI usernameUI; 
 
 
     private void Awake()
@@ -29,6 +30,7 @@ public class NetworkManagerUI : MonoBehaviour
             hostBttn.gameObject.SetActive(false);
             joinBttn.gameObject.SetActive(false);
             joinCodeInput.gameObject.SetActive(false);
+            usernameUI.gameObject.SetActive(false);
         });
         joinBttn.onClick.AddListener(() =>
         {
@@ -43,6 +45,7 @@ public class NetworkManagerUI : MonoBehaviour
             joinBttn.gameObject.SetActive(false);
             hostBttn.gameObject.SetActive(false);
             joinCodeInput.gameObject.SetActive(false);
+            usernameUI.gameObject.SetActive(false);
         });
         if (connectionMethod == ConnectionMethod.RELAY)
         {
