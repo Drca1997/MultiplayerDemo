@@ -85,32 +85,47 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void GetPlayerFinalScoreServerRpc(int playerID, int finalScore)
     {
+        //to fix: isto esta a correr 2 vezes por cada jogador. pq??
         finalScores[playerID] = finalScore;
-        if (finalScores.Count == NetworkManager.Singleton.ConnectedClientsIds.Count)
+        if (finalScores.Count == NetworkManager.Singleton.ConnectedClientsIds.Count) 
         {
-            List<ulong> winnersID = GetWinner();
-            ClientRpcParams winnerParams = new ClientRpcParams();
-            ClientRpcSendParams winnerSendParams = new ClientRpcSendParams { TargetClientIds = winnersID };
-            winnerParams.Send = winnerSendParams;
-            GameVictoryClientRpc(winnerParams);
-            
-            List<ulong> losers = GetLosers(winnersID);
-            ClientRpcParams losersParams = new ClientRpcParams();
-            ClientRpcSendParams losersSendParams = new ClientRpcSendParams { TargetClientIds = losers };
-            losersParams.Send = losersSendParams;
-            GameOverClientRpc(losersParams);
-            
-            List<ScoreEntry> scoreTable = GetScoreTable();
+            List<ulong> winnersID = SendWinnerData();
+            SendLosersData(winnersID);
 
-            int i = 1;
-            foreach (ScoreEntry entry in scoreTable)
-            {
-                FixedString64Bytes name = MultiplayerManager.Instance.GetPlayerDataFromClientId(entry.playerID).playerName;
-                ScoreTableClientRpc(i, name, entry.score);
-                i++;
-            }
+            BuildScoreTable();
         }
     }
+
+    private List<ulong> SendWinnerData()
+    {
+        List<ulong> winnersID = GetWinner();
+        ClientRpcParams winnerParams = new ClientRpcParams();
+        ClientRpcSendParams winnerSendParams = new ClientRpcSendParams { TargetClientIds = winnersID };
+        winnerParams.Send = winnerSendParams;
+        GameVictoryClientRpc(winnerParams);
+        return winnersID;
+    }
+
+    private void SendLosersData(List<ulong> winnersID)
+    {
+        List<ulong> losers = GetLosers(winnersID);
+        ClientRpcParams losersParams = new ClientRpcParams();
+        ClientRpcSendParams losersSendParams = new ClientRpcSendParams { TargetClientIds = losers };
+        losersParams.Send = losersSendParams;
+        GameOverClientRpc(losersParams);
+    }
+
+    private void BuildScoreTable()
+    {
+        List<ScoreEntry> scoreTable = GetScoreTable();
+
+        for (int i = 0; i < scoreTable.Count; i++)
+        {
+            FixedString64Bytes name = MultiplayerManager.Instance.GetPlayerDataFromClientId(scoreTable[i].playerID).playerName;
+            ScoreTableClientRpc(i + 1, name, scoreTable[i].score);
+        }
+    }
+
     [ClientRpc]
     private void ScoreTableClientRpc(int pos, FixedString64Bytes playerName, int score)
     {
@@ -120,11 +135,26 @@ public class GameManager : NetworkBehaviour
     private List<ScoreEntry> GetScoreTable()
     {
         List<ScoreEntry> scoreTable = new List<ScoreEntry>();
-        //TEMP
         foreach(KeyValuePair<int, int> score in finalScores)
         {
             scoreTable.Add(new ScoreEntry((ulong)score.Key, score.Value));
         }
+
+        scoreTable.Sort((a, b) => 
+        { 
+            if (a.score > b.score)
+            {
+                return -1;
+            }
+            else if(a.score < b.score)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        });
         return scoreTable;
     }
 
@@ -161,8 +191,9 @@ public class GameManager : NetworkBehaviour
         }
         return losers;
     }
-    [ServerRpc(RequireOwnership=false)]
-    public void CheckEndGameServerRpc()
+
+    //[ServerRpc(RequireOwnership=false)]
+    public void CheckEndGame()
     {
         if (!AreThereChestsToOpen())
         {

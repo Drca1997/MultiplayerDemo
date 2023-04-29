@@ -41,6 +41,7 @@ public class TreasureChest : NetworkBehaviour, IInteractable
     private void OpenTreasureChestServerRpc()
     {
         OpenTreasureChestClientRpc();
+        GameManager.Instance.CheckEndGame();    
     }
 
     [ClientRpc]
@@ -48,7 +49,6 @@ public class TreasureChest : NetworkBehaviour, IInteractable
     {
         animator.SetBool(OPENED, true);
         opened = true;
-        GameManager.Instance.CheckEndGameServerRpc();    
     }
 
 
