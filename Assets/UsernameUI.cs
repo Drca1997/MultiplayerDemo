@@ -13,6 +13,7 @@ public class UsernameUI : MonoBehaviour
         playerNameInputField.onValueChanged.AddListener((string newText) => {
             MultiplayerManager.Instance.SetPlayerName(newText);
         });
+        playerNameInputField.text = MultiplayerManager.Instance.GetPlayerName();
     }
 
     
