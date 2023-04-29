@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,12 @@ public class CameraController : MonoBehaviour
     private float smoothSpeed = 0.125f;
     [SerializeField]
     private Vector3 offset;
+
+    public static event EventHandler<OnFollowPlayerArgs> OnFollowPlayer;
+    public class OnFollowPlayerArgs: EventArgs
+    {
+        public Transform cameraTransform;
+    }
     /*
     [SerializeField]
     private float sensivity;
@@ -30,12 +37,14 @@ public class CameraController : MonoBehaviour
     void Awake()
     {
         PlayerController.OnPlayerSpawn += OnPlayerSpawn;
+        
         obstaclesInPreviousFrame = new List<GameObject>();
     }
 
     private void OnPlayerSpawn(object sender, PlayerController.OnPlayerSpawnArgs args)
     {
         player = args.playerTransform;
+        OnFollowPlayer?.Invoke(this, new OnFollowPlayerArgs { cameraTransform = transform});
     }
 
     // Update is called once per frame

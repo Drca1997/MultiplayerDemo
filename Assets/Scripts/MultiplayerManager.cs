@@ -4,20 +4,29 @@ using UnityEngine;
 using System;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
+using System.Linq;
+using Unity.Collections;
 
 public class MultiplayerManager : NetworkBehaviour
 {
 
 
     public const int MAX_PLAYER_AMOUNT = 4;
-    private const string PLAYER_PREFS_PLAYER_NAME_MULTIPLAYER = "PlayerNameMultiplayer";
+    public const string PLAYER_PREFS_PLAYER_NAME_MULTIPLAYER = "PlayerNameMultiplayer";
 
 
     public static MultiplayerManager Instance { get; private set; }
+    public string PlayerName { get => playerName; }
 
     public event EventHandler OnTryingToJoinGame;
     public event EventHandler OnFailedToJoinGame;
     public event EventHandler OnPlayerDataNetworkListChanged;
+    public event EventHandler<OnClientConnectedArgs> OnClientConnected;
+    public class OnClientConnectedArgs: EventArgs
+    {
+        public ulong clientID;
+        public string clientName;
+    }
 
 
     [SerializeField] private List<Color> playerColorList;
@@ -130,6 +139,20 @@ public class MultiplayerManager : NetworkBehaviour
         //SetPlayerIdServerRpc(AuthenticationService.Instance.PlayerId);
     }
 
+    /*
+    public void SetPlayerNamesLabels(Dictionary<ulong, NetworkObject> playersNetworkObjects)
+    {
+        foreach (KeyValuePair<ulong, NetworkObject> pair in playersNetworkObjects)
+        {
+            PlayerData playerData = GetPlayerDataFromPlayerIndex(GetPlayerDataIndexFromClientId(pair.Key));
+            pair.Value.GetComponent<UsernameDisplayInGame>().SetPlayerName(playerData.playerName.ToString());
+            NetworkObjectReference playerObjectRef = pair.Value;
+            playerObjsRefs.Add(playerObjectRef);
+            names.Add(playerData.playerName.ToString());
+        }
+        
+    }*/
+
     
     [ServerRpc(RequireOwnership = false)]
     private void SetPlayerNameServerRpc(string playerName, ServerRpcParams serverRpcParams = default)
@@ -141,6 +164,7 @@ public class MultiplayerManager : NetworkBehaviour
         playerData.playerName = playerName;
 
         playerDataNetworkList[playerDataIndex] = playerData;
+
     }
 
     /*

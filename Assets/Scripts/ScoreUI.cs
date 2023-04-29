@@ -9,12 +9,16 @@ public class ScoreUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI text;
     [SerializeField] private TextMeshProUGUI finalScoreLabel;
     [SerializeField] private TextMeshProUGUI resultLabel;
+    [SerializeField] private GameObject scoreTableObject;
+    [SerializeField] private Transform scoreTableRoot;
+    [SerializeField] private GameObject scoreTableRowPrefab;
 
     // Start is called before the first frame update
     void Start()
     {
         PlayerController.OnUpdateScore += OnUpdateScore;
         GameManager.OnGameEnd += OnGameEnd;
+        GameManager.OnScoreTableUpdate += OnScoreTableUpdate;
     }
 
     // Update is called once per frame
@@ -44,6 +48,15 @@ public class ScoreUI : MonoBehaviour
         {
             resultLabel.text = "DEFEAT";
         }
+        scoreTableObject.SetActive(true);
+    }
+
+    private void OnScoreTableUpdate(object sender, GameManager.OnScoreTableUpdateArgs args)
+    {
+        GameObject scoreTableRowObj = Instantiate(scoreTableRowPrefab, scoreTableRoot);
+        scoreTableRowObj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = args.pos.ToString();
+        scoreTableRowObj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = args.name;
+        scoreTableRowObj.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = args.score.ToString();
     }
 
 

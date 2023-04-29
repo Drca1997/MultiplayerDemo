@@ -1,33 +1,42 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
 public class GameManager : NetworkBehaviour
 {
     [SerializeField] private Transform playerPrefab;
-
+    [SerializeField] private UsernamesManager usernamesManager;
     public static GameManager Instance { get; private set; }
-    List<int> players;
     Dictionary<int, int> finalScores;
+    private Dictionary<ulong, NetworkObject> playerNetworkObjects;
 
     public static event EventHandler<OnGameEndArgs> OnGameEnd;
-    public class OnGameEndArgs: EventArgs
+    public class OnGameEndArgs : EventArgs
     {
         public bool isVictory;
         public int finalScore;
+    }
+    public static event EventHandler<OnScoreTableUpdateArgs> OnScoreTableUpdate;
+    public class OnScoreTableUpdateArgs: EventArgs
+    {
+        public int pos;
+        public string name;
+        public int score;
     }
 
     private void Awake()
     {
         Instance = this;
+        playerNetworkObjects = new Dictionary<ulong, NetworkObject>();
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        players = new List<int>();
         finalScores= new Dictionary<int, int>();
     }
 
@@ -51,8 +60,21 @@ public class GameManager : NetworkBehaviour
         {
             Transform playerTransform = Instantiate(playerPrefab);
             playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+            playerNetworkObjects[clientId] = playerTransform.GetComponent<NetworkObject>();
         }
-    } 
+        foreach(KeyValuePair<ulong, NetworkObject> pair in playerNetworkObjects)
+        {
+            FixedString64Bytes name = MultiplayerManager.Instance.GetPlayerDataFromClientId(pair.Key).playerName;
+            GetUsernameClientRpc(pair.Value, name);
+        }
+    }
+
+    [ClientRpc]
+    private void GetUsernameClientRpc(NetworkObjectReference playerReference, FixedString64Bytes playerName)
+    {
+        playerReference.TryGet(out NetworkObject playerObj);
+        usernamesManager.GetPlayerRef(playerObj.transform, playerName.ToString());   
+    }
 
     [ClientRpc]
     private void GetPlayerFinalScoreClientRpc()
@@ -77,10 +99,36 @@ public class GameManager : NetworkBehaviour
             ClientRpcSendParams losersSendParams = new ClientRpcSendParams { TargetClientIds = losers };
             losersParams.Send = losersSendParams;
             GameOverClientRpc(losersParams);
+            
+            List<ScoreEntry> scoreTable = GetScoreTable();
+
+            int i = 1;
+            foreach (ScoreEntry entry in scoreTable)
+            {
+                FixedString64Bytes name = MultiplayerManager.Instance.GetPlayerDataFromClientId(entry.playerID).playerName;
+                ScoreTableClientRpc(i, name, entry.score);
+                i++;
+            }
         }
     }
+    [ClientRpc]
+    private void ScoreTableClientRpc(int pos, FixedString64Bytes playerName, int score)
+    {
+        OnScoreTableUpdate?.Invoke(this, new OnScoreTableUpdateArgs { pos = pos, name = playerName.ToString(), score = score});
+    }
 
-    private List<ulong> GetWinner()
+    private List<ScoreEntry> GetScoreTable()
+    {
+        List<ScoreEntry> scoreTable = new List<ScoreEntry>();
+        //TEMP
+        foreach(KeyValuePair<int, int> score in finalScores)
+        {
+            scoreTable.Add(new ScoreEntry((ulong)score.Key, score.Value));
+        }
+        return scoreTable;
+    }
+
+    private List<ulong> GetWinner(/*out List<int> scoreTable*/)
     {
         List<int> winnerID = new List<int> { -1};
         int max = 0;
@@ -97,6 +145,7 @@ public class GameManager : NetworkBehaviour
                 winnerID.Add(pair.Key);
             }
         }
+        
         return winnerID.ConvertAll(i => (ulong)i);
     }
 
@@ -143,4 +192,15 @@ public class GameManager : NetworkBehaviour
         OnGameEnd?.Invoke(this, new OnGameEndArgs { isVictory = true, finalScore = PlayerController.LocalInstance.Score });
     }
 
+}
+
+public struct ScoreEntry
+{
+    public ulong playerID;
+    public int score;
+    public ScoreEntry(ulong playerID, int score)
+    {
+        this.playerID = playerID;
+        this.score = score;
+    }
 }
