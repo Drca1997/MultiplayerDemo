@@ -3695,7 +3695,7 @@ MonoBehaviour:
   - {fileID: 1275372692}
   - {fileID: 1134462546}
   - {fileID: 921581917}
-  treasuresToSpawn: 1
+  treasuresToSpawn: 12
 --- !u!4 &1272739776
 Transform:
   m_ObjectHideFlags: 0
