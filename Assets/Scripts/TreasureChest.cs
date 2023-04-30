@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using static Hat;
 
 public class TreasureChest : NetworkBehaviour, IInteractable
 {
@@ -9,6 +10,8 @@ public class TreasureChest : NetworkBehaviour, IInteractable
     private const string OPENED = "Opened";
     private bool opened = false;
     private int treasureValue;
+    HatSO hatSO;
+    
 
     public bool Opened { get => opened; }
 
@@ -18,6 +21,7 @@ public class TreasureChest : NetworkBehaviour, IInteractable
         animator = GetComponentInChildren<Animator>();  
         if (IsServer)
         {
+            SetHat();
             SetTreasureValue();
         }
     }
@@ -32,7 +36,7 @@ public class TreasureChest : NetworkBehaviour, IInteractable
     {
         if (!opened)
         {
-            player.Score += treasureValue;
+            SetPlayerScore(player);
             OpenTreasureChestServerRpc();
         }
     }
@@ -40,6 +44,10 @@ public class TreasureChest : NetworkBehaviour, IInteractable
     [ServerRpc(RequireOwnership=false)]
     private void OpenTreasureChestServerRpc()
     {
+        if (hatSO != null)
+        {
+            //SpawnHat();
+        }
         OpenTreasureChestClientRpc();
         GameManager.Instance.CheckEndGame();    
     }
@@ -51,10 +59,25 @@ public class TreasureChest : NetworkBehaviour, IInteractable
         opened = true;
     }
 
+    private void SetPlayerScore(PlayerController player)
+    {
+        if (!player.HasHat())
+        {
+            player.Score += treasureValue;
+        }
+        else
+        {
+            player.Score += GameDesignConstants.TREASURE_WITH_HAT_SCORE_FOR_PLAYER_WITH_HAT;
+        }
+    }
 
     private void SetTreasureValue()
     {
-        int value = Random.Range(GameDesignConstants.TREASURE_MIN_SCORE, GameDesignConstants.TREASURE_MAX_SCORE);
+        int value = GameDesignConstants.TREASURE_WITH_HAT_SCORE;
+        if (hatSO == null)
+        {
+            value = Random.Range(GameDesignConstants.TREASURE_MIN_SCORE, GameDesignConstants.TREASURE_MAX_SCORE + 1);
+        }
         SetTreasureValueClientRpc(value);
     }
 
@@ -63,5 +86,59 @@ public class TreasureChest : NetworkBehaviour, IInteractable
     {
         treasureValue = value;
     }
+
+
+    private void SetHat()
+    {
+        int type = 0;
+        if (DoesSpawnHat())
+        {
+            type = Random.Range(1, GameDesignConstants.NUMBER_OF_HATS + 1);
+        }
+        else
+        {
+            type = 0;
+        }
+        SetHatClientRpc(type);
+    }
+
+    [ClientRpc]
+    private void SetHatClientRpc(int value)
+    {
+        if (value == 0)
+        {
+            hatSO = null;
+        }
+        else
+        {
+            hatSO = (HatSO)Resources.Load("HatSOs\\Hat" + value.ToString());
+        }
+    } 
+
+    private bool DoesSpawnHat()
+    {
+        float value = Random.Range(0, 1);
+        if (value <= GameDesignConstants.TREASURE_SPAWNS_HAT_PROBABILITY)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /*
+    private GameObject SpawnHat()
+    {
+        switch (hatType)
+        {
+            case HatEnum.COWBOY:
+                GameObject cowboyHatObj = Instantiate();
+                return cowboyHatObj;
+            case HatEnum.CROWN:
+                GameObject crownObj = Instantiate();
+                return crownObj;
+            default:
+                return null;
+        }
+    }*/
 
 }

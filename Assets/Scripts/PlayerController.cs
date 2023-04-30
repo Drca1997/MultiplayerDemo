@@ -206,4 +206,13 @@ public class PlayerController : NetworkBehaviour
         snowball.GetComponent<NetworkObject>().Spawn();
         
     }
+
+    public bool HasHat()
+    {
+        if (GetComponent<Hat>() != null)
+        {
+            return true;
+        }
+        return false;
+    }
 }
