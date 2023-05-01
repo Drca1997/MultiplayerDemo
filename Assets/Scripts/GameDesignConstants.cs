@@ -12,6 +12,6 @@ public static class GameDesignConstants
     public const int TREASURE_WITH_HAT_SCORE = 1;
     public const int TREASURE_WITH_HAT_SCORE_FOR_PLAYER_WITH_HAT = 5;
 
-    public const float TREASURE_SPAWNS_HAT_PROBABILITY = 0.33f;
+    public const float TREASURE_SPAWNS_HAT_PROBABILITY = 0.99f;
     public const int NUMBER_OF_HATS = 2;
 }

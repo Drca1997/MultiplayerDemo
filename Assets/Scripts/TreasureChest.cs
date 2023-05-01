@@ -37,16 +37,16 @@ public class TreasureChest : NetworkBehaviour, IInteractable
         if (!opened)
         {
             SetPlayerScore(player);
-            OpenTreasureChestServerRpc();
+            OpenTreasureChestServerRpc(player.GetComponent<NetworkObject>());
         }
     }
 
     [ServerRpc(RequireOwnership=false)]
-    private void OpenTreasureChestServerRpc()
+    private void OpenTreasureChestServerRpc(NetworkObjectReference playerRef)
     {
         if (hatSO != null)
         {
-            //SpawnHat();
+            SpawnHat(playerRef);
         }
         OpenTreasureChestClientRpc();
         GameManager.Instance.CheckEndGame();    
@@ -125,20 +125,20 @@ public class TreasureChest : NetworkBehaviour, IInteractable
         return false;
     }
 
-    /*
-    private GameObject SpawnHat()
+    
+    private void SpawnHat(NetworkObjectReference playerRef)
     {
-        switch (hatType)
+        playerRef.TryGet(out NetworkObject playerObj);
+        PlayerController playerController  = playerObj.GetComponent<PlayerController>();
+        if (!playerController.HasHat())
         {
-            case HatEnum.COWBOY:
-                GameObject cowboyHatObj = Instantiate();
-                return cowboyHatObj;
-            case HatEnum.CROWN:
-                GameObject crownObj = Instantiate();
-                return crownObj;
-            default:
-                return null;
+            GameObject hatObj = Instantiate(hatSO.prefab, null);
+            hatObj.GetComponent<NetworkObject>().Spawn();
+            hatObj.GetComponent<FollowTransform>().SetTargetTransform(playerController.HatSpawnPosition);
+            playerController.CurrentHat = hatObj.GetComponent<Hat>();
         }
-    }*/
+
+        
+    }
 
 }

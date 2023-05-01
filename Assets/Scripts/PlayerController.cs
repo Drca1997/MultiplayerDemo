@@ -13,6 +13,8 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private SnowballSO snowballSO;
     [SerializeField] private Transform snowballSpawnPoint;
     [SerializeField] private PlayerVisual playerVisual;
+    [SerializeField] private Transform hatSpawnPosition;
+    private Hat currentHat;
     
 
     private SnowballUI snowballUIManager;
@@ -34,6 +36,9 @@ public class PlayerController : NetworkBehaviour
             OnUpdateScore?.Invoke(this, new OnUpdateScoreArgs { score = value }); 
         } 
     }
+
+    public Transform HatSpawnPosition { get => hatSpawnPosition; }
+    public Hat CurrentHat { get => currentHat; set => currentHat = value; }
 
     public static event EventHandler<OnSelectedInteractableChangedEventArgs> OnSelectedInteractableChanged;
     public class OnSelectedInteractableChangedEventArgs : EventArgs
@@ -209,7 +214,7 @@ public class PlayerController : NetworkBehaviour
 
     public bool HasHat()
     {
-        if (GetComponent<Hat>() != null)
+        if (currentHat != null)
         {
             return true;
         }

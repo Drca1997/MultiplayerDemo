@@ -7,7 +7,7 @@ using UnityEngine;
 public class HatSO : ScriptableObject
 {
     
-    public Transform prefab;
+    public GameObject prefab;
     public string objectName;
     public string abilityDescription;
 

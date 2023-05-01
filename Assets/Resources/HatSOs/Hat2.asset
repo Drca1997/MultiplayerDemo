@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8016b82147e229459883ccad16fd9ff, type: 3}
   m_Name: Hat2
   m_EditorClassIdentifier: 
-  prefab: {fileID: 400000, guid: 598a1f45fefa08846b93be35e98f166e, type: 3}
+  prefab: {fileID: 7998926967368173794, guid: f781e7c9059e1ec4591b2128940e6efe, type: 3}
   objectName: CrownHat
   abilityDescription: 1.5x score from treasures
