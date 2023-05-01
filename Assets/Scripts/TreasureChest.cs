@@ -132,7 +132,7 @@ public class TreasureChest : NetworkBehaviour, IInteractable
         PlayerController playerController  = playerObj.GetComponent<PlayerController>();
         if (!playerController.HasHat())
         {
-            GameObject hatObj = Instantiate(hatSO.prefab, null);
+            GameObject hatObj = Instantiate(hatSO.prefab, playerController.HatSpawnPosition.position, playerController.HatSpawnPosition.rotation, null);
             hatObj.GetComponent<NetworkObject>().Spawn();
             hatObj.GetComponent<FollowTransform>().SetTargetTransform(playerController.HatSpawnPosition);
             playerController.CurrentHat = hatObj.GetComponent<Hat>();

@@ -12,7 +12,7 @@ public class FollowTransform : MonoBehaviour
         this.targetTransform = targetTransform;
     }
 
-    private void LateUpdate()
+    private void Update()
     {
         if (targetTransform == null)
         {
