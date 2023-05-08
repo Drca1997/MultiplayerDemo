@@ -14,4 +14,8 @@ public static class GameDesignConstants
 
     public const float TREASURE_SPAWNS_HAT_PROBABILITY = 0.99f;
     public const int NUMBER_OF_HATS = 2;
+
+    public const float COWBOY_HAT_THROW_COOLDOWN_BONUS = 2f; 
+    public const float CROWN_HAT_SCORE_MULTIPLIER = 1.5f; 
+    public const float POLICE_HAT_KO_MULTIPLIER = 2f; 
 }

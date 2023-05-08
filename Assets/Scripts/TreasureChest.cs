@@ -63,11 +63,11 @@ public class TreasureChest : NetworkBehaviour, IInteractable
     {
         if (!player.HasHat())
         {
-            player.Score += treasureValue;
+            player.SetScore(treasureValue);
         }
         else
         {
-            player.Score += GameDesignConstants.TREASURE_WITH_HAT_SCORE_FOR_PLAYER_WITH_HAT;
+            player.SetScore(GameDesignConstants.TREASURE_WITH_HAT_SCORE_FOR_PLAYER_WITH_HAT);
         }
     }
 

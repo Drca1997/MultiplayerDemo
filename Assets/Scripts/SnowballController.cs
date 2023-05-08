@@ -63,7 +63,13 @@ public class SnowballController : NetworkBehaviour
     private void UpdateThrowerScoreClientRpc(NetworkObjectReference throwerPlayerReference, ClientRpcParams clientParams)
     {
         throwerPlayerReference.TryGet(out NetworkObject throwerPlayerObject);
-        throwerPlayerObject.GetComponent<PlayerController>().Score += GameDesignConstants.ON_THROW_SCORE;
+        PlayerController player = throwerPlayerObject.GetComponent<PlayerController>();
+        int KOPoints = GameDesignConstants.ON_THROW_SCORE; 
+        if (player.CurrentHat != null && player.CurrentHat is PoliceHat)
+        {
+            KOPoints = Mathf.FloorToInt(KOPoints * GameDesignConstants.POLICE_HAT_KO_MULTIPLIER);
+        }
+        player.SetScore(KOPoints);
     }
 
     [ClientRpc]

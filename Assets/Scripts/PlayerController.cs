@@ -30,11 +30,7 @@ public class PlayerController : NetworkBehaviour
     public int Score 
     { 
         get => score; 
-        set 
-        { 
-            score = value; 
-            OnUpdateScore?.Invoke(this, new OnUpdateScoreArgs { score = value }); 
-        } 
+        
     }
 
     public Transform HatSpawnPosition { get => hatSpawnPosition; }
@@ -191,7 +187,14 @@ public class PlayerController : NetworkBehaviour
         if (currentCooldown <= 0)
         {
             InstantiateProjectilServerRpc(GetComponent<NetworkObject>(), snowballSpawnPoint.position, transform.forward);
-            currentCooldown = snowballSO.cooldown;
+            if (currentHat != null && currentHat is CowboyHat)
+            {
+                currentCooldown = snowballSO.cooldown - GameDesignConstants.COWBOY_HAT_THROW_COOLDOWN_BONUS;
+            }
+            else
+            {
+                currentCooldown = snowballSO.cooldown;
+            }
             snowballUIManager.ResetCooldown();
             
         }
@@ -219,5 +222,18 @@ public class PlayerController : NetworkBehaviour
             return true;
         }
         return false;
+    }
+
+    public void SetScore(int morePoints)
+    {
+        if (currentHat != null && currentHat is CrownHat)
+        {
+            score += Mathf.FloorToInt(morePoints * GameDesignConstants.CROWN_HAT_SCORE_MULTIPLIER);
+        }
+        else
+        {
+            score += morePoints;
+        }
+        OnUpdateScore?.Invoke(this, new OnUpdateScoreArgs { score = score });
     }
 }
