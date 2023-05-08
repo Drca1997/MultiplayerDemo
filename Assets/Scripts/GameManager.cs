@@ -73,7 +73,8 @@ public class GameManager : NetworkBehaviour
     private void GetUsernameClientRpc(NetworkObjectReference playerReference, FixedString64Bytes playerName)
     {
         playerReference.TryGet(out NetworkObject playerObj);
-        usernamesManager.GetPlayerRef(playerObj.transform, playerName.ToString());   
+        usernamesManager.GetPlayerRef(playerObj.transform, playerName.ToString());
+        HatSpawnerManager.Instance.GetPlayerRef(playerObj.GetComponent<PlayerController>().OwnerClientId, playerObj.transform.GetChild(0).GetChild(0));
     }
 
     [ClientRpc]
