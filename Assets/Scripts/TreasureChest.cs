@@ -61,14 +61,20 @@ public class TreasureChest : NetworkBehaviour, IInteractable
 
     private void SetPlayerScore(PlayerController player)
     {
+        int points;
         if (!player.HasHat())
         {
-            player.SetScore(treasureValue);
+            points = treasureValue;
         }
         else
         {
-            player.SetScore(GameDesignConstants.TREASURE_WITH_HAT_SCORE_FOR_PLAYER_WITH_HAT);
+            points = GameDesignConstants.TREASURE_WITH_HAT_SCORE_FOR_PLAYER_WITH_HAT; 
+            if (player.CurrentHat is CrownHat)
+            {
+                points = Mathf.FloorToInt(points * GameDesignConstants.CROWN_HAT_SCORE_MULTIPLIER);
+            }
         }
+        player.SetScore(points);
     }
 
     private void SetTreasureValue()
@@ -117,7 +123,7 @@ public class TreasureChest : NetworkBehaviour, IInteractable
 
     private bool DoesSpawnHat()
     {
-        float value = Random.Range(0, 1);
+        float value = Random.Range(0, 0.99f);
         if (value <= GameDesignConstants.TREASURE_SPAWNS_HAT_PROBABILITY)
         {
             return true;
@@ -137,6 +143,10 @@ public class TreasureChest : NetworkBehaviour, IInteractable
             //hatObj.GetComponent<FollowTransform>().SetTargetTransform(playerController.HatSpawnPosition);
             playerController.CurrentHat = HatSpawnerManager.Instance.HatPrefabs[hatSO.index].GetComponent<Hat>();
             SpawnHatClientRpc(playerController.OwnerClientId, hatSO.index);
+            ClientRpcParams clientParams = new ClientRpcParams();
+            ClientRpcSendParams clientSendParams = new ClientRpcSendParams {TargetClientIds = new List<ulong> { playerController.OwnerClientId} };
+            clientParams.Send = clientSendParams;
+            SetHatClientRpc(playerRef, hatSO.index, clientParams);
         }
     }
 
@@ -144,6 +154,15 @@ public class TreasureChest : NetworkBehaviour, IInteractable
     private void SpawnHatClientRpc(ulong playerID, int hatPrefab)
     {
         HatSpawnerManager.Instance.SpawnHat(playerID, hatPrefab);
+
+    }
+
+    [ClientRpc]
+    private void SetHatClientRpc(NetworkObjectReference playerRef, int hatPrefab, ClientRpcParams clientParams)
+    {
+        playerRef.TryGet(out NetworkObject playerObj);
+        PlayerController playerController = playerObj.GetComponent<PlayerController>();
+        playerController.CurrentHat = HatSpawnerManager.Instance.HatPrefabs[hatPrefab].GetComponent<Hat>();
     }
 
 }

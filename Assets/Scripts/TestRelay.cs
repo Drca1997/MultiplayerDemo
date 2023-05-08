@@ -28,7 +28,7 @@ public class TestRelay : MonoBehaviour
     {
         try
         {
-            Allocation allocation = await RelayService.Instance.CreateAllocationAsync(3, "europe-west2");
+            Allocation allocation = await RelayService.Instance.CreateAllocationAsync(4, "europe-west2");
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetHostRelayData(

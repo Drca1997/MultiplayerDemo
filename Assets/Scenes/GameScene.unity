@@ -649,6 +649,7 @@ MonoBehaviour:
   hatPrefabs:
   - {fileID: 4844096261926495664, guid: 52c2bd221e8c0f84980cc50c2f667cff, type: 3}
   - {fileID: 7998926967368173794, guid: f781e7c9059e1ec4591b2128940e6efe, type: 3}
+  - {fileID: 7998926967368173794, guid: f2e823ba939f672478a93762e9aa0913, type: 3}
   hatHeight: 0.2
 --- !u!4 &161480622
 Transform:

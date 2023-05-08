@@ -11,7 +11,7 @@ public class MultiplayerManager : NetworkBehaviour
 {
 
 
-    public const int MAX_PLAYER_AMOUNT = 4;
+    public const int MAX_PLAYER_AMOUNT = 5;
     public const string PLAYER_PREFS_PLAYER_NAME_MULTIPLAYER = "PlayerNameMultiplayer";
 
 

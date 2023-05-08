@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3fb078ff1b11ef4688ce8b57fc052e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hatSO: {fileID: 11400000, guid: b6cf5d9ea7e1de14dadbf43f05418d06, type: 2}
+  hatSO: {fileID: 11400000, guid: 05fbb785dccc9934993a00074837c500, type: 2}
 --- !u!1001 &7998926967597436434
 PrefabInstance:
   m_ObjectHideFlags: 0

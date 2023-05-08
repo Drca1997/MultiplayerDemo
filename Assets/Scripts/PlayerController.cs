@@ -226,14 +226,7 @@ public class PlayerController : NetworkBehaviour
 
     public void SetScore(int morePoints)
     {
-        if (currentHat != null && currentHat is CrownHat)
-        {
-            score += Mathf.FloorToInt(morePoints * GameDesignConstants.CROWN_HAT_SCORE_MULTIPLIER);
-        }
-        else
-        {
-            score += morePoints;
-        }
+        score += morePoints;
         OnUpdateScore?.Invoke(this, new OnUpdateScoreArgs { score = score });
     }
 }
