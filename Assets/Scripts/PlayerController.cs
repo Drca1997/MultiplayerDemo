@@ -35,6 +35,7 @@ public class PlayerController : NetworkBehaviour
 
     public Transform HatSpawnPosition { get => hatSpawnPosition; }
     public Hat CurrentHat { get => currentHat; set => currentHat = value; }
+    public Vector3 MovementVector { get => movementVector; }
 
     public static event EventHandler<OnSelectedInteractableChangedEventArgs> OnSelectedInteractableChanged;
     public class OnSelectedInteractableChangedEventArgs : EventArgs

@@ -12,8 +12,29 @@ public class CameraController : MonoBehaviour
     private Transform player;
     [SerializeField]
     private float smoothSpeed = 0.125f;
+    [Header("Camera Offsets")]
     [SerializeField]
-    private Vector3 offset;
+    private Vector3 defaultOffset;
+    [SerializeField]
+    private Vector3 northOffset;
+    [SerializeField]
+    private Vector3 northEastOffset;
+    [SerializeField]
+    private Vector3 eastOffset;
+    [SerializeField]
+    private Vector3 southEastOffset;
+    [SerializeField]
+    private Vector3 southOffset;
+    [SerializeField]
+    private Vector3 southWestOffset;
+    [SerializeField]
+    private Vector3 westOffset;
+    [SerializeField]
+    private Vector3 northWestOffset;
+
+    private Vector3 currentOffset;
+
+    private PlayerController playerController;
 
     public static event EventHandler<OnFollowPlayerArgs> OnFollowPlayer;
     public class OnFollowPlayerArgs: EventArgs
@@ -39,11 +60,13 @@ public class CameraController : MonoBehaviour
         PlayerController.OnPlayerSpawn += OnPlayerSpawn;
         
         obstaclesInPreviousFrame = new List<GameObject>();
+        currentOffset = defaultOffset;
     }
 
     private void OnPlayerSpawn(object sender, PlayerController.OnPlayerSpawnArgs args)
     {
         player = args.playerTransform;
+        playerController = player.GetComponent<PlayerController>();
         OnFollowPlayer?.Invoke(this, new OnFollowPlayerArgs { cameraTransform = transform});
     }
 
@@ -111,11 +134,63 @@ public class CameraController : MonoBehaviour
     {
         if (player != null)
         {
-            Vector3 desiredPosition = player.position + offset;
+            ChangeOffset();
+            Vector3 desiredPosition = player.position + currentOffset;
             Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
             transform.position = smoothedPosition;
             transform.LookAt(player);
         }
+    }
+
+    private void ChangeOffset()
+    { 
+
+        if (playerController.MovementVector.z < 0) //south
+        {
+            if (playerController.MovementVector.x > 0) //east
+            {
+                currentOffset = southEastOffset;
+            }
+            else if (playerController.MovementVector.x < 0) //west
+            {
+                currentOffset = southWestOffset;
+            }
+            else
+            {
+                currentOffset = southOffset;
+            }
+        }
+        else if (playerController.MovementVector.z > 0) //north
+        {
+            if (playerController.MovementVector.x > 0) //east
+            {
+                currentOffset = northEastOffset;
+            }
+            else if (playerController.MovementVector.x < 0) //west
+            {
+                currentOffset = northWestOffset;
+            }
+            else
+            {
+                currentOffset = northOffset;
+            }
+        }
+        else
+        {
+            if (playerController.MovementVector.x > 0) //east
+            {
+                currentOffset = eastOffset;
+            }
+            else if (playerController.MovementVector.x < 0) //west
+            {
+                currentOffset = westOffset;
+            }
+            else
+            {
+                currentOffset= defaultOffset;
+            }
+        }
+       
     }
 
 }
