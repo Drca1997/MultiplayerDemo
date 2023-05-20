@@ -7,5 +7,5 @@ public class SpawnPoints : MonoBehaviour
     [SerializeField] private Transform [] spawnPoints;
 
     public Transform[] SpawnPointsArray { get => spawnPoints; }
-
+    
 }

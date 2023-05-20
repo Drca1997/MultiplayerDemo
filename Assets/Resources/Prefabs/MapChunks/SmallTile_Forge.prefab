@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4420986479108551981}
   - component: {fileID: 3329528318578004111}
+  - component: {fileID: 7797060013640730427}
+  - component: {fileID: 782111783053669832}
   m_Layer: 0
   m_Name: SmallTile_Forge
   m_TagString: Untagged
@@ -74,6 +76,36 @@ MonoBehaviour:
   spawnPoints:
   - {fileID: 4420986480020063628}
   - {fileID: 4420986479282218417}
+--- !u!114 &7797060013640730427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4420986479108551982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 209eaf9d50d7c3f419e334739904d673, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  treasurePrefab: {fileID: 1537257262190976905, guid: 069c411d3e721144c9bc7c2121e97dee, type: 3}
+  treasuresMax: 2
+--- !u!114 &782111783053669832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4420986479108551982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &4420986479282218418
 GameObject:
   m_ObjectHideFlags: 0

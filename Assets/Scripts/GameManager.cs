@@ -212,6 +212,7 @@ public class GameManager : NetworkBehaviour
         }
         return false;
     }
+
     [ClientRpc]
     private void GameOverClientRpc(ClientRpcParams rpcParams)
     {
