@@ -203,7 +203,7 @@ public class GameManager : NetworkBehaviour
     }
     private bool AreThereChestsToOpen()
     {
-        foreach (TreasureChest chest in TreasureChestSpawner.Instance.SpawnedTreasureChests)
+        foreach (TreasureChest chest in TreasureChestManager.Instance.SpawnedTreasureChests)
         {
             if (!chest.Opened)
             {

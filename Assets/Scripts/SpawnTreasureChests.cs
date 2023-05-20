@@ -22,8 +22,7 @@ public class SpawnTreasureChests : NetworkBehaviour
         for (int i = 0; i < treasureCount; i++)
         {
             int spawnPointIndex = Random.Range(0, possibleSpawnPoints.Count);
-            Transform spawnedChest = Instantiate(treasurePrefab, possibleSpawnPoints[spawnPointIndex].position, possibleSpawnPoints[spawnPointIndex].rotation, null);
-            spawnedChest.GetComponent<NetworkObject>().Spawn(true);
+            TreasureChestManager.Instance.SpawnTreasureChest(possibleSpawnPoints[spawnPointIndex]);
             possibleSpawnPoints.RemoveAt(spawnPointIndex);
         }
     }

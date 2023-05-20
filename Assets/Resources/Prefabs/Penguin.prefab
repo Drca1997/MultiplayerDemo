@@ -970,11 +970,11 @@ MonoBehaviour:
   moveSpeed: 2
   rotateSpeed: 10
   possibleSpawnPositions:
-  - {x: -1, y: 0, z: 0}
-  - {x: 1, y: 0, z: 0}
-  - {x: -1, y: 0, z: -2}
-  - {x: 1, y: 0, z: -2}
   - {x: 0, y: 0, z: -4}
+  - {x: -2, y: 0, z: -3.5}
+  - {x: 2, y: 0, z: -3.5}
+  - {x: 4, y: 0, z: -3}
+  - {x: -4, y: 0, z: -3}
   snowballSO: {fileID: 11400000, guid: 3a0b5d4d44c618b4d9fd26eaffe21c6c, type: 2}
   snowballSpawnPoint: {fileID: 4349275531548270871}
   playerVisual: {fileID: 7174343713506066372}
