@@ -32,6 +32,5 @@ public class TreasureChestManager : NetworkBehaviour
         Transform spawnedChest = Instantiate(treasurePrefab, spawnPoint.position, spawnPoint.rotation, null);
         spawnedChest.GetComponent<NetworkObject>().Spawn(true);
         spawnedTreasureChests.Add(spawnedChest.GetComponent<TreasureChest>());
-        Debug.Log(spawnedTreasureChests.Count);
     }
 }

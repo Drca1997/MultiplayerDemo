@@ -39,6 +39,7 @@ public class TestRelay : MonoBehaviour
                 allocation.ConnectionData
             );
             Debug.Log(joinCode);
+            MultiplayerManager.Instance.LobbyCode = joinCode;
             MultiplayerManager.Instance.StartHost();
         }
         catch (RelayServiceException e)

@@ -14,18 +14,26 @@ public class MultiplayerManager : NetworkBehaviour
     public const int MAX_PLAYER_AMOUNT = 5;
     public const string PLAYER_PREFS_PLAYER_NAME_MULTIPLAYER = "PlayerNameMultiplayer";
 
+    private string lobbyCode;
 
     public static MultiplayerManager Instance { get; private set; }
     public string PlayerName { get => playerName; }
+    public string LobbyCode { get => lobbyCode; set => lobbyCode = value; }
 
     public event EventHandler OnTryingToJoinGame;
     public event EventHandler OnFailedToJoinGame;
     public event EventHandler OnPlayerDataNetworkListChanged;
     public event EventHandler<OnClientConnectedArgs> OnClientConnected;
+    public event EventHandler<OnLobbyCodeArgs> OnLobbyCode;
     public class OnClientConnectedArgs: EventArgs
     {
         public ulong clientID;
         public string clientName;
+    }
+
+    public class OnLobbyCodeArgs: EventArgs
+    {
+        public string lobbyCode;
     }
 
 
@@ -101,6 +109,7 @@ public class MultiplayerManager : NetworkBehaviour
         playerDataNetworkList.Add(newPlayerInfo);
        
         SetPlayerNameServerRpc(GetPlayerName());
+        GetLobbyCodeServerRpc(clientId);
         //SetPlayerIdServerRpc(AuthenticationService.Instance.PlayerId);
     }
 
@@ -136,6 +145,7 @@ public class MultiplayerManager : NetworkBehaviour
     private void NetworkManager_Client_OnClientConnectedCallback(ulong clientId)
     {
         SetPlayerNameServerRpc(GetPlayerName());
+        GetLobbyCodeServerRpc(clientId);
         //SetPlayerIdServerRpc(AuthenticationService.Instance.PlayerId);
     }
 
@@ -286,4 +296,22 @@ public class MultiplayerManager : NetworkBehaviour
         NetworkManager.Singleton.DisconnectClient(clientId);
         NetworkManager_Server_OnClientDisconnectCallback(clientId);
     }*/
+
+    [ServerRpc(RequireOwnership=false)]
+    public void GetLobbyCodeServerRpc(ulong clientId)
+    {
+        ClientRpcParams clientParams = new ClientRpcParams();
+        ClientRpcSendParams sendParams = new ClientRpcSendParams { TargetClientIds = new List<ulong>() { clientId } };
+        clientParams.Send = sendParams;
+        if (lobbyCode != null)
+        {
+            GetLobbyClientRpc(lobbyCode, clientParams);
+        }
+    }
+
+    [ClientRpc]
+    private void GetLobbyClientRpc(FixedString64Bytes joinCode, ClientRpcParams clientParams)
+    {
+        OnLobbyCode?.Invoke(this, new OnLobbyCodeArgs { lobbyCode = joinCode.ToString()});
+    }
 }
