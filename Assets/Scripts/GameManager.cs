@@ -67,6 +67,9 @@ public class GameManager : NetworkBehaviour
             FixedString64Bytes name = MultiplayerManager.Instance.GetPlayerDataFromClientId(pair.Key).playerName;
             GetUsernameClientRpc(pair.Value, name);
         }
+
+        MapGenerator.Instance.GenerateScenario();
+
     }
 
     [ClientRpc]
@@ -191,6 +194,11 @@ public class GameManager : NetworkBehaviour
             }
         }
         return losers;
+    }
+
+    public void EndGame()
+    {
+        GetPlayerFinalScoreClientRpc();
     }
 
     //[ServerRpc(RequireOwnership=false)]

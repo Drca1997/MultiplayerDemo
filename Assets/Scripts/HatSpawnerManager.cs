@@ -42,7 +42,7 @@ public class HatSpawnerManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate() //TO DO: check if this fixes mini-lag between hats and players
     {
         UpdateHats();   
     }

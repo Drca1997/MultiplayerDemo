@@ -6,9 +6,9 @@ public class SpawnSmallRooms : NetworkBehaviour
 {
     [SerializeField] private GameObject[] smallRoomsPrefabs;
 
-    private void Start()
+    public void SpawnSmallRoom()
     {
-        if (!IsHost) { return; }
+        if (!IsServer) { return; }
         Transform [] spawnPoints = GetComponent<SpawnPoints>().SpawnPointsArray;
         foreach (Transform spawnPoint in spawnPoints)
         {

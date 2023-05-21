@@ -49,7 +49,7 @@ public class TreasureChest : NetworkBehaviour, IInteractable
             SpawnHat(playerRef);
         }
         OpenTreasureChestClientRpc();
-        GameManager.Instance.CheckEndGame();    
+        //GameManager.Instance.CheckEndGame();    
     }
 
     [ClientRpc]

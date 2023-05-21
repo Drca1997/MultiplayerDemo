@@ -14,6 +14,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private Transform snowballSpawnPoint;
     [SerializeField] private PlayerVisual playerVisual;
     [SerializeField] private Transform hatSpawnPosition;
+    [SerializeField] private Transform finalTreasureHoldingPosition;
     private Hat currentHat;
     
 
@@ -26,6 +27,7 @@ public class PlayerController : NetworkBehaviour
     private IInteractable selectedInteractable;
     private bool isWalking;
     private const float _threshold = 0.01f;
+    private bool hasFinalTreasure;
 
     public int Score 
     { 
@@ -36,6 +38,8 @@ public class PlayerController : NetworkBehaviour
     public Transform HatSpawnPosition { get => hatSpawnPosition; }
     public Hat CurrentHat { get => currentHat; set => currentHat = value; }
     public Vector3 MovementVector { get => movementVector; }
+    public bool HasFinalTreasure { get => hasFinalTreasure; }
+    public Transform FinalTreasureHoldingPosition { get => finalTreasureHoldingPosition; }
 
     public static event EventHandler<OnSelectedInteractableChangedEventArgs> OnSelectedInteractableChanged;
     public class OnSelectedInteractableChangedEventArgs : EventArgs
@@ -55,6 +59,7 @@ public class PlayerController : NetworkBehaviour
         public Transform playerTransform;
     }
 
+    public static event EventHandler OnPickUpFinalTreasure;
 
     public override void OnNetworkSpawn()
     {
@@ -75,6 +80,8 @@ public class PlayerController : NetworkBehaviour
 
         PlayerData playerData = MultiplayerManager.Instance.GetPlayerDataFromClientId(OwnerClientId);
         playerVisual.SetPlayerColor(MultiplayerManager.Instance.GetPlayerColor(playerData.colorID));
+
+        hasFinalTreasure = false;
     }
 
     void Update()
@@ -82,7 +89,10 @@ public class PlayerController : NetworkBehaviour
         if (!IsOwner) { return; }
 
         HandleMovement();
-        HandleInteractions();
+        if (!hasFinalTreasure)
+        {
+            HandleInteractions();
+        }
 
         UpdateAttackCooldown();
     }
@@ -91,7 +101,18 @@ public class PlayerController : NetworkBehaviour
     {
         if (!IsOwner) { return; }
         float playerRadius = 0.6f;
-        bool canMove = !Physics.BoxCast(transform.position, Vector3.one * playerRadius, movementVector, Quaternion.identity, moveSpeed * Time.fixedDeltaTime);
+        bool canMove = !Physics.BoxCast(transform.position, Vector3.one * playerRadius, movementVector, out RaycastHit hit, Quaternion.identity, moveSpeed * Time.fixedDeltaTime);
+        if (hit.collider != null && hit.collider.gameObject.GetComponent<EndGameTrigger>())
+        {
+            canMove = true;
+            if (hasFinalTreasure)
+            {
+                Debug.Log("ENDGAME");
+                score += GameDesignConstants.FINAL_TREASURE_SCORE;
+                GameManager.Instance.EndGame();
+                
+            }
+        }
         if (!canMove)
         {
             Vector3 moveXOnly = new Vector3(movementVector.x, 0, 0);
@@ -229,5 +250,13 @@ public class PlayerController : NetworkBehaviour
     {
         score += morePoints;
         OnUpdateScore?.Invoke(this, new OnUpdateScoreArgs { score = score });
+    }
+
+    public void PickUpFinalTreasure()
+    {
+        hasFinalTreasure = true;
+        //finalTreasureVisual.SetActive(true);
+
+        OnPickUpFinalTreasure?.Invoke(this, EventArgs.Empty);
     }
 }

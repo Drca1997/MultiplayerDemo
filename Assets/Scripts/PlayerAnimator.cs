@@ -22,6 +22,7 @@ public class PlayerAnimator : NetworkBehaviour
         GameInput.OnAttackActionPerformed += OnThrowSnowball;
         PlayerHit.OnHit += OnStunned;
         PlayerHit.OnStunnedRecovery += OnRecovery;
+        PlayerController.OnPickUpFinalTreasure += OnPickFinalTreasure;
         ownerNetworkAnimator = GetComponent<OwnerNetworkAnimator>();
     }
 
@@ -61,5 +62,13 @@ public class PlayerAnimator : NetworkBehaviour
         if (!IsOwner) { return; }
         animator.SetBool(STUNNED, false);
     }
+
+    private void OnPickFinalTreasure(object sender, EventArgs args)
+    {
+        if (!IsOwner) { return; }
+        //animator.SetBool(CARRYING_TREASURE, false);
+    }
+
+
 
 }

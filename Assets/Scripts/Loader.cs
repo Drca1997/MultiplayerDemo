@@ -14,6 +14,7 @@ public static class Loader
         LoadingScene,
         LobbyScene,
         CharacterSelectionScene,
+        GameScene_Debug
     }
 
 
