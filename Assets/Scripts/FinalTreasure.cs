@@ -36,7 +36,6 @@ public class FinalTreasure : NetworkBehaviour, IInteractable
         {
             isPickedUp = true;
             player.TryGet(out NetworkObject playerObj);
-            playerObj.GetComponent<PlayerController>().PickUpFinalTreasure();
             SetPlayerCarrierClientRpc(player);
             //GetComponent<NetworkObject>().DontDestroyWithOwner = true;
             //GetComponent<NetworkObject>().Despawn();
@@ -49,6 +48,7 @@ public class FinalTreasure : NetworkBehaviour, IInteractable
     {
         player.TryGet(out NetworkObject playerObj);
         playerCarrying = playerObj.GetComponent<PlayerController>();
+        playerCarrying.PickUpFinalTreasure();
     }
 
     [ClientRpc]

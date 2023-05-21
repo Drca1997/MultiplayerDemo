@@ -198,10 +198,15 @@ public class GameManager : NetworkBehaviour
 
     public void EndGame()
     {
+        EndGameServerRpc();   
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void EndGameServerRpc()
+    {
         GetPlayerFinalScoreClientRpc();
     }
 
-    //[ServerRpc(RequireOwnership=false)]
     public void CheckEndGame()
     {
         if (!AreThereChestsToOpen())
