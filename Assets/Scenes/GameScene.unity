@@ -1719,9 +1719,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 599869953}
-  - component: {fileID: 599869955}
-  - component: {fileID: 599869954}
-  - component: {fileID: 599869956}
   m_Layer: 0
   m_Name: Chamber
   m_TagString: Untagged
@@ -1755,53 +1752,6 @@ Transform:
   m_Father: {fileID: 1422952852}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &599869954
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 599869952}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 209eaf9d50d7c3f419e334739904d673, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &599869955
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 599869952}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a1bf6dd4e03d6143a10ebc0db9c33ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnPoints:
-  - {fileID: 136138685}
-  - {fileID: 1815071983}
-  - {fileID: 564412835}
-  - {fileID: 800240453}
-  - {fileID: 912398954}
-  - {fileID: 1366191732}
---- !u!114 &599869956
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 599869952}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3293261783
-  AlwaysReplicateAsRoot: 0
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
 --- !u!1 &629845452
 GameObject:
   m_ObjectHideFlags: 0
