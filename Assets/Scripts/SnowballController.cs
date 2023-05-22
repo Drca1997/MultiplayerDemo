@@ -49,7 +49,15 @@ public class SnowballController : NetworkBehaviour
                 throwerClientParams.Send = throwerSendParams;
                 UpdateThrowerScoreClientRpc(thrower, throwerClientParams);
             }
-            Destroy(gameObject);
+            if (hit.collider.GetComponent<EndGameTrigger>() != null)
+            {
+                transform.position += direction * moveSpeed;
+                SnowballTrajectoryUpdateClientRpc(transform.position.x, transform.position.y, transform.position.z);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
         else
         {

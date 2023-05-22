@@ -48,7 +48,10 @@ public class PlayerAnimator : NetworkBehaviour
     private void OnThrowSnowball(object sender, EventArgs args)
     {
         if (!IsOwner) { return; }
-        ownerNetworkAnimator.SetTrigger(THROW);
+        if (!playerController.HasFinalTreasure)
+        {
+            ownerNetworkAnimator.SetTrigger(THROW);
+        }
     }
 
     private void OnStunned(object sender, EventArgs args)

@@ -37,6 +37,7 @@ Transform:
   - {fileID: 4653818835621297199}
   - {fileID: 1326031329301771966}
   - {fileID: 4743899654505580758}
+  - {fileID: 1510827157199516101}
   m_Father: {fileID: 7068649243463115685}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -204,6 +205,36 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &1738400326103121987
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1510827157199516101}
+  m_Layer: 0
+  m_Name: FinalTreasureDropPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1510827157199516101
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1738400326103121987}
+  m_LocalRotation: {x: 0.6633637, y: 0.06319878, z: 0.017308725, w: 0.7454227}
+  m_LocalPosition: {x: 1.64, y: -0.3, z: -0.32}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1031813899865972159}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 80.675, y: 46.319, z: 42.588}
 --- !u!1 &1947672725469779946
 GameObject:
   m_ObjectHideFlags: 0
@@ -942,13 +973,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6963107019669689308}
-  m_LocalRotation: {x: -0.2219415, y: -0.0057167574, z: 0.34828922, w: 0.9107162}
-  m_LocalPosition: {x: 0.33, y: 0.03, z: 1.16}
+  m_LocalRotation: {x: 0.0061630416, y: -0.09089548, z: -0.06736697, w: 0.99356014}
+  m_LocalPosition: {x: 0.761, y: -0.18, z: 0.783}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1031813899865972159}
   m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: -23.595, y: -10.374, z: 44.029}
+  m_LocalEulerAnglesHint: {x: 0, y: -10.454, z: -7.758}
 --- !u!1 &7068649243463115686
 GameObject:
   m_ObjectHideFlags: 0
@@ -1011,6 +1042,7 @@ MonoBehaviour:
   playerVisual: {fileID: 7174343713506066372}
   hatSpawnPosition: {fileID: 1326031329301771966}
   finalTreasureHoldingPosition: {fileID: 4743899654505580758}
+  finalTreasureDropPosition: {fileID: 1510827157199516101}
 --- !u!114 &445585136955391053
 MonoBehaviour:
   m_ObjectHideFlags: 0

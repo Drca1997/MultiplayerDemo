@@ -15,6 +15,8 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private PlayerVisual playerVisual;
     [SerializeField] private Transform hatSpawnPosition;
     [SerializeField] private Transform finalTreasureHoldingPosition;
+    [SerializeField] private Transform finalTreasureDropPosition;
+
     private Hat currentHat;
     
 
@@ -38,8 +40,9 @@ public class PlayerController : NetworkBehaviour
     public Transform HatSpawnPosition { get => hatSpawnPosition; }
     public Hat CurrentHat { get => currentHat; set => currentHat = value; }
     public Vector3 MovementVector { get => movementVector; }
-    public bool HasFinalTreasure { get => hasFinalTreasure; }
+    public bool HasFinalTreasure { get => hasFinalTreasure; set => hasFinalTreasure = value; }
     public Transform FinalTreasureHoldingPosition { get => finalTreasureHoldingPosition; }
+    public Transform FinalTreasureDropPosition { get => finalTreasureDropPosition; set => finalTreasureDropPosition = value; }
 
     public static event EventHandler<OnSelectedInteractableChangedEventArgs> OnSelectedInteractableChanged;
     public class OnSelectedInteractableChangedEventArgs : EventArgs
@@ -60,6 +63,7 @@ public class PlayerController : NetworkBehaviour
     }
 
     public static event EventHandler OnPickUpFinalTreasure;
+    public static event EventHandler OnDropFinalTreasure;
 
     public override void OnNetworkSpawn()
     {
@@ -206,7 +210,7 @@ public class PlayerController : NetworkBehaviour
     private void GameInput_OnAttackAction(object sender, EventArgs e)
     {
         if (!IsOwner) { return; }
-        if (currentCooldown <= 0)
+        if (currentCooldown <= 0 && !hasFinalTreasure)
         {
             InstantiateProjectilServerRpc(GetComponent<NetworkObject>(), snowballSpawnPoint.position, transform.forward);
             if (currentHat != null && currentHat is CowboyHat)
@@ -255,8 +259,12 @@ public class PlayerController : NetworkBehaviour
     public void PickUpFinalTreasure()
     {
         hasFinalTreasure = true;
-        //finalTreasureVisual.SetActive(true);
-
         OnPickUpFinalTreasure?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void DropFinalTreasure()
+    {
+        hasFinalTreasure = false;
+        OnDropFinalTreasure?.Invoke(this, EventArgs.Empty);
     }
 }

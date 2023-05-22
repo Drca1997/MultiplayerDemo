@@ -42,6 +42,7 @@ public class PlayerHit : NetworkBehaviour, IDamageable
         isStunned = true;
         currentRecoveryTime = recoveryTime;
         PlayerController.LocalInstance.SetScore(-GameDesignConstants.ON_HIT_PENALTY);
+        PlayerController.LocalInstance.DropFinalTreasure();
         OnHit?.Invoke(this, EventArgs.Empty);
     }
 
